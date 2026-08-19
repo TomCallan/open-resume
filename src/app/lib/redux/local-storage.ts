@@ -2,11 +2,14 @@ import type { RootState } from "lib/redux/store";
 
 // Reference: https://dev.to/igorovic/simplest-way-to-persist-redux-state-to-localstorage-e67
 
-const LOCAL_STORAGE_KEY = "open-resume-state";
+const LOCAL_STORAGE_KEY = "craftcv-state";
+const LEGACY_STORAGE_KEY = "open-resume-state";
 
 export const loadStateFromLocalStorage = () => {
   try {
-    const stringifiedState = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const stringifiedState =
+      localStorage.getItem(LOCAL_STORAGE_KEY) ||
+      localStorage.getItem(LEGACY_STORAGE_KEY);
     if (!stringifiedState) return undefined;
     return JSON.parse(stringifiedState);
   } catch (e) {

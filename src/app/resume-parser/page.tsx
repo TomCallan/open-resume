@@ -28,7 +28,7 @@ const RESUME_EXAMPLES = [
     fileUrl: "resume-example/openresume-resume.pdf",
     description: (
       <span>
-        Created with OpenResume resume builder -{" "}
+        Created with CraftCV resume builder -{" "}
         <Link href="/resume-builder">Link</Link>
       </span>
     ),
@@ -82,7 +82,7 @@ export default function ResumeParser() {
               Resume Parser Playground
             </Heading>
             <Paragraph smallMarginTop={true}>
-              This playground showcases the OpenResume resume parser and its
+              This playground showcases the CraftCV resume parser and its
               ability to parse information from a resume PDF. Click around the
               PDF examples below to observe different parsing results.
             </Paragraph>

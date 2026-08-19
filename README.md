@@ -1,30 +1,28 @@
-# OpenResume
+# CraftCV
 
-OpenResume is a powerful open-source resume builder and resume parser.
+CraftCV is a fast, privacy-first, open-source resume builder and ATS parser.
 
-The goal of OpenResume is to provide everyone with free access to a modern professional resume design and enable anyone to apply for jobs with confidence.
-
-Official site: [https://open-resume.com](https://open-resume.com)
+Create beautiful LaTeX and modern professional resumes with live real-time PDF preview, curated templates, and native local AI agent support.
 
 ## Resume Builder
 
-OpenResume's resume builder allows user to create a modern professional resume easily.
+CraftCV's resume builder allows you to create modern professional and LaTeX-style resumes effortlessly.
 
 ![Resume Builder Demo](https://i.ibb.co/jzcrrt8/resume-builder-demo-optimize.gif)
 
-It has 6 Core Features:
+Core Features:
 | <div style="width:285px">**Feature**</div> | **Description** |
 |---|---|
-| **1. Real Time UI Update** | The resume PDF is updated in real time as you enter your resume information, so you can easily see the final output. |
-| **2. Multi-Template Selection** | Choose across 8 curated ATS-friendly resume templates including iconic LaTeX styles: **Jake's LaTeX** (Overleaf CS gold standard with `\hrulefill`), **ModernCV LaTeX** (European academic & tech standard with rule accents), **Tech LaTeX** (high-density FAANG engineering layout), **Modern** (sleek colored accents), **Classic** (traditional corporate centered header), **Executive** (bold header line & solid accents), **Minimal** (clean Swiss typography), and **Compact** (dense 1-page space saver). |
-| **3. Modern Professional Resume Design** | The resume PDF is a modern professional design that adheres to U.S. best practices and is ATS friendly to top ATS platforms such as Greenhouse and Lever. It automatically formats fonts, sizes, margins, bullet points to ensure consistency and avoid human errors. |
-| **4. Privacy Focus** | The app only runs locally on your browser, meaning no sign up is required and no data ever leaves your browser, so it gives you peace of mind on your personal data. (Fun fact: Running only locally means the app still works even if you disconnect the internet.) |
-| **5. Import From Existing Resume PDF / JSON** | If you already have an existing resume PDF or an AI-generated `resume.json`, you can import it directly into OpenResume in seconds. |
-| **6. Successful Track Record** | OpenResume users have landed interviews and offers from top companies, such as Dropbox, Google, Meta to name a few. It has been proven to work and liken by recruiters and hiring managers. |
+| **1. Real Time PDF Compilation** | The resume PDF updates in real time as you edit information, with debounced compilation to prevent CPU lag. |
+| **2. Multi-Template Selection** | Choose across 8 curated ATS-friendly resume templates including iconic LaTeX styles: **Jake's LaTeX** (Overleaf CS standard with `\hrulefill`), **ModernCV LaTeX** (European academic & tech standard with rule accents), **Tech LaTeX** (high-density FAANG engineering layout), **Modern** (clean colored accents), **Classic** (traditional corporate centered header), **Executive** (bold header line & solid accents), **Minimal** (clean Swiss typography), and **Compact** (dense 1-page space saver). |
+| **3. ATS-Friendly & Battle-Tested** | Adheres to top ATS best practices (Greenhouse, Lever, Workday) with deterministic text layer rendering, bullet consistency, and proper typography. |
+| **4. 100% Privacy-First & Offline** | Runs entirely in your browser. No sign-up, no analytics tracking, no external database. Data never leaves your machine. |
+| **5. Import Existing PDF / JSON** | Import existing resume PDFs for ATS extraction or drag-and-drop AI-generated `resume.json` files directly into the builder. |
+| **6. Local AI Agent Ready** | Native prompt recipes and schema for local coding agents (AGY, Kimi, Cursor, Claude, Ollama) to build and tailor resumes. |
 
 ## Resume Template Gallery
 
-OpenResume includes 8 distinct, ATS-optimized templates. Every template is fully customizable in font family, font size, theme color, document size (Letter/A4), and section order.
+CraftCV includes 8 distinct, ATS-optimized templates. Every template is fully customizable in font family, font size, theme color, document size (Letter/A4), and section order.
 
 | **Jake's LaTeX (`latex-jakes`)** | **ModernCV LaTeX (`latex-moderncv`)** |
 | :---: | :---: |
@@ -44,55 +42,40 @@ OpenResume includes 8 distinct, ATS-optimized templates. Every template is fully
 | **Classic (`classic`)** | **Modern (`modern`)** |
 | :---: | :---: |
 | <img src="public/examples/classic.png" width="380" alt="Classic Template"> | <img src="public/examples/modern.png" width="380" alt="Modern Template"> |
-| *Traditional corporate centered header & underline dividers* | *OpenResume original with top accent bar & badge markers* |
+| *Traditional corporate centered header & underline dividers* | *Original layout with top accent bar & badge markers* |
 
 ## Resume Parser
 
-OpenResume’s second component is the resume parser. For those who have an existing resume, the resume parser can help test and confirm its ATS readability.
+CraftCV's second component is the resume parser playground to inspect ATS text extraction, line grouping, and section identification.
 
 ![Resume Parser Demo](https://i.ibb.co/JvSVwNk/resume-parser-demo-optimize.gif)
-
-You can learn more about the resume parser algorithm in the ["Resume Parser Algorithm Deep Dive" section](https://open-resume.com/resume-parser).
 
 ## Tech Stack
 
 | <div style="width:140px">**Category**</div> | <div style="width:100px">**Choice**</div> | **Descriptions** |
 |---|---|---|
-| **Language** | [TypeScript](https://github.com/microsoft/TypeScript) | TypeScript is JavaScript with static type checking and helps catch many silly bugs at code time. |
-| **UI Library** | [React](https://github.com/facebook/react) | React’s declarative syntax and component-based architecture make it simple to develop reactive reusable components. |
-| **State Management** | [Redux Toolkit](https://github.com/reduxjs/redux-toolkit) | Redux toolkit reduces the boilerplate to set up and update a central redux store, which is used in managing the complex resume state. |
-| **CSS Framework** | [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) | Tailwind speeds up development by providing helpful css utilities and removing the need to context switch between tsx and css files. |
-| **Web Framework** | [NextJS 13](https://github.com/vercel/next.js) | Next.js supports static site generation and helps build efficient React webpages that support SEO. |
-| **PDF Reader** | [PDF.js](https://github.com/mozilla/pdf.js) | PDF.js reads content from PDF files and is used by the resume parser at its first step to read a resume PDF’s content. |
-| **PDF Renderer** | [React-pdf](https://github.com/diegomura/react-pdf) | React-pdf creates PDF files and is used by the resume builder to create a downloadable PDF file. |
+| **Language** | [TypeScript](https://github.com/microsoft/TypeScript) | Static type safety and structured models. |
+| **UI Library** | [React 18](https://github.com/facebook/react) | Declarative component architecture. |
+| **State Management** | [Redux Toolkit](https://github.com/reduxjs/redux-toolkit) | Centralized resume state with debounced localStorage persistence. |
+| **CSS Framework** | [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) | Utility-first responsive design. |
+| **Web Framework** | [Next.js 13](https://github.com/vercel/next.js) | App router with static optimization. |
+| **PDF Engine** | [PDF.js](https://github.com/mozilla/pdf.js) & [React-PDF](https://github.com/diegomura/react-pdf) | Robust PDF text extraction and client-side vector PDF generation. |
 
-## Project Structure
+## Quick Start
 
-OpenResume is created with the NextJS web framework and follows its project structure. The source code can be found in `src/app`. There are a total of 4 page routes as shown in the table below. (Code path is relative to `src/app`)
+```bash
+git clone https://github.com/TomCallan/open-resume.git craft-cv
+cd craft-cv
+npm install
+npm run dev
+```
 
-| <div style="width:115px">**Page Route**</div> | **Code Path** | **Description** |
-|---|---|---|
-| / | /page.tsx | Home page that contains hero, auto typing resume, steps, testimonials, logo cloud, etc |
-| /resume-import | /resume-import/page.tsx | Resume import page, where you can choose to import data from an existing resume PDF. The main component used is `ResumeDropzone` (`/components/ResumeDropzone.tsx`) |
-| /resume-builder | /resume-builder/page.tsx | Resume builder page to build and download a resume PDF. The main components used are `ResumeForm` (`/components/ResumeForm`) and `Resume` (`/components/Resume`) |
-| /resume-parser | /resume-parser/page.tsx | Resume parser page to test a resume’s AST readability. The main library util used is `parseResumeFromPdf` (`/lib/parse-resume-from-pdf`) |
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Method 1: npm
-
-1. Download the repo `git clone https://github.com/xitanggg/open-resume.git`
-2. Change the directory `cd open-resume`
-3. Install dependencies `npm install`
-4. Start development server `npm run dev`
-5. Run automated test suite `npm test` (or `npm run test:watch` for interactive watch mode)
-6. Open your browser and visit [http://localhost:3000](http://localhost:3000) to see OpenResume live
-
-### Method 2: Docker
-
-1. Download the repo `git clone https://github.com/xitanggg/open-resume.git`
-2. Change the directory `cd open-resume`
-3. Build the container `docker build -t open-resume .`
-4. Start the container `docker run -p 3000:3000 open-resume`
-5. Open your browser and visit [http://localhost:3000](http://localhost:3000) to see OpenResume live
+To run tests:
+```bash
+npm test
+```
 
 ## Performance and Architecture Highlights
 
@@ -104,10 +87,10 @@ OpenResume is created with the NextJS web framework and follows its project stru
 
 ## Local AI Agent Integration (AGY, Kimi, Cursor, Claude, Ollama)
 
-OpenResume supports direct integration with local coding agents and LLMs (such as **Antigravity / AGY**, **Kimi**, **Cursor**, **Claude Code**, or local **Ollama** models) to build, tailor, and format resumes locally with zero data ever sent to third-party resume platforms.
+CraftCV supports direct integration with local coding agents and LLMs (such as **Antigravity / AGY**, **Kimi**, **Cursor**, **Claude Code**, or local **Ollama** models) to build, tailor, and format resumes locally with zero data ever sent to third-party resume platforms.
 
 ### 1. How It Works
-AI agents can generate an OpenResume-compliant `resume.json` file. You can simply drag and drop the `.json` file into `/resume-import` (or browser dropzone), and OpenResume will immediately render your fully editable resume with your selected template.
+AI agents can generate a CraftCV-compliant `resume.json` file. You can simply drag and drop the `.json` file into `/resume-import` (or browser dropzone), and CraftCV will immediately render your fully editable resume with your selected template.
 
 ### 2. AI Agent Prompt Template
 
@@ -174,9 +157,9 @@ Return ONLY valid JSON matching this schema:
     }
   },
   "settings": {
-    "template": "modern",
+    "template": "latex-jakes",
     "themeColor": "#38bdf8",
-    "fontFamily": "Roboto",
+    "fontFamily": "Caladea",
     "fontSize": "11",
     "documentSize": "Letter"
   }
@@ -198,7 +181,7 @@ When specifying `settings.template`, agents can pick any of the 8 built-in style
 ### 4. Direct Browser Injection (Optional)
 If running automated scripts or browser sidecars, agents can inject the state directly into the browser session:
 ```javascript
-localStorage.setItem("open-resume-state", JSON.stringify({ resume, settings }));
+localStorage.setItem("craftcv-state", JSON.stringify({ resume, settings }));
 window.location.href = "/resume-builder";
 ```
 

@@ -18,12 +18,12 @@ export const TopNavBar = () => {
       )}
     >
       <div className="flex h-10 w-full items-center justify-between">
-        <Link href="/">
-          <span className="sr-only">OpenResume</span>
+        <Link href="/" className="flex items-center">
+          <span className="sr-only">CraftCV</span>
           <Image
             src={logoSrc}
-            alt="OpenResume Logo"
-            className="h-8 w-full"
+            alt="CraftCV Logo"
+            className="h-8 w-auto"
             priority
           />
         </Link>
@@ -37,21 +37,20 @@ export const TopNavBar = () => {
           ].map(([href, text]) => (
             <Link
               key={text}
-              className="rounded-md px-1.5 py-2 text-gray-500 hover:bg-gray-100 focus-visible:bg-gray-100 lg:px-4"
+              className="rounded-md px-2.5 py-1.5 text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus-visible:bg-gray-100 lg:px-4"
               href={href}
             >
               {text}
             </Link>
           ))}
-          <div className="ml-1 mt-1">
-            <iframe
-              src="https://ghbtns.com/github-btn.html?user=xitanggg&repo=open-resume&type=star&count=true"
-              width="100"
-              height="20"
-              className="overflow-hidden border-none"
-              title="GitHub"
-            />
-          </div>
+          <Link
+            href="https://github.com/TomCallan/open-resume"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-2 hidden rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 sm:inline-block"
+          >
+            GitHub
+          </Link>
         </nav>
       </div>
     </header>

@@ -9,27 +9,26 @@ const FEATURES = [
   {
     src: featureFreeSrc,
     title: "Free Forever",
-    text: "OpenResume is created with the belief that everyone should have free and easy access to a modern professional resume design",
+    text: "CraftCV is built on the belief that everyone deserves free, unrestricted access to modern professional resume designs and LaTeX quality typography.",
   },
   {
     src: featureUSSrc,
     title: "U.S. Best Practices",
-    text: "OpenResume has built-in best practices for the U.S. job market and works well with top ATS platforms such as Greenhouse and Lever",
+    text: "CraftCV has built-in best practices for the global and U.S. job market, fully ATS-friendly for Greenhouse, Lever, and Workday.",
   },
   {
     src: featurePrivacySrc,
-    title: "Privacy Focus",
-    text: "OpenResume stores data locally in your browser so only you have access to your data and with complete control",
+    title: "Privacy-First",
+    text: "CraftCV stores all resume data locally in your browser. No sign up required, zero telemetry, and your data never leaves your machine.",
   },
   {
     src: featureOpenSourceSrc,
-    title: "Open-Source",
+    title: "Open-Source & AI Ready",
     text: (
       <>
-        OpenResume is an open-source project, and its source code can be viewed
-        by anyone on its{" "}
-        <Link href="https://github.com/xitanggg/open-resume">
-          GitHub repository
+        CraftCV is open-source with first-class local AI agent support (AGY, Kimi, Cursor, Claude). Source on{" "}
+        <Link href="https://github.com/TomCallan/open-resume">
+          GitHub
         </Link>
       </>
     ),
