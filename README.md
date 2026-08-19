@@ -6,7 +6,7 @@ The goal of OpenResume is to provide everyone with free access to a modern profe
 
 Official site: [https://open-resume.com](https://open-resume.com)
 
-## ⚒️ Resume Builder
+## Resume Builder
 
 OpenResume's resume builder allows user to create a modern professional resume easily.
 
@@ -22,7 +22,7 @@ It has 6 Core Features:
 | **5. Import From Existing Resume PDF / JSON** | If you already have an existing resume PDF or an AI-generated `resume.json`, you can import it directly into OpenResume in seconds. |
 | **6. Successful Track Record** | OpenResume users have landed interviews and offers from top companies, such as Dropbox, Google, Meta to name a few. It has been proven to work and liken by recruiters and hiring managers. |
 
-## 🎨 Resume Template Gallery
+## Resume Template Gallery
 
 OpenResume includes 8 distinct, ATS-optimized templates. Every template is fully customizable in font family, font size, theme color, document size (Letter/A4), and section order.
 
@@ -46,7 +46,7 @@ OpenResume includes 8 distinct, ATS-optimized templates. Every template is fully
 | <img src="public/examples/classic.png" width="380" alt="Classic Template"> | <img src="public/examples/modern.png" width="380" alt="Modern Template"> |
 | *Traditional corporate centered header & underline dividers* | *OpenResume original with top accent bar & badge markers* |
 
-## 🔍 Resume Parser
+## Resume Parser
 
 OpenResume’s second component is the resume parser. For those who have an existing resume, the resume parser can help test and confirm its ATS readability.
 
@@ -54,7 +54,7 @@ OpenResume’s second component is the resume parser. For those who have an exis
 
 You can learn more about the resume parser algorithm in the ["Resume Parser Algorithm Deep Dive" section](https://open-resume.com/resume-parser).
 
-## 📚 Tech Stack
+## Tech Stack
 
 | <div style="width:140px">**Category**</div> | <div style="width:100px">**Choice**</div> | **Descriptions** |
 |---|---|---|
@@ -66,7 +66,7 @@ You can learn more about the resume parser algorithm in the ["Resume Parser Algo
 | **PDF Reader** | [PDF.js](https://github.com/mozilla/pdf.js) | PDF.js reads content from PDF files and is used by the resume parser at its first step to read a resume PDF’s content. |
 | **PDF Renderer** | [React-pdf](https://github.com/diegomura/react-pdf) | React-pdf creates PDF files and is used by the resume builder to create a downloadable PDF file. |
 
-## 📁 Project Structure
+## Project Structure
 
 OpenResume is created with the NextJS web framework and follows its project structure. The source code can be found in `src/app`. There are a total of 4 page routes as shown in the table below. (Code path is relative to `src/app`)
 
@@ -94,15 +94,15 @@ OpenResume is created with the NextJS web framework and follows its project stru
 4. Start the container `docker run -p 3000:3000 open-resume`
 5. Open your browser and visit [http://localhost:3000](http://localhost:3000) to see OpenResume live
 
-## 🚀 Performance & Architecture Highlights
+## Performance and Architecture Highlights
 
 - **Zero-Latency Typing**: State persistence to `localStorage` is debounced (500ms) with an automatic `beforeunload` flush, preventing main-thread blocking during rapid typing.
 - **Efficient PDF Compilation**: PDF document generation via `@react-pdf/renderer` is debounced to avoid CPU thrashing on continuous keystrokes, with visual download preparation states.
 - **Memoized ATS Parser Pipeline**: Text extraction, line grouping, and section scoring in the Resume Parser Playground are fully memoized using `useMemo` to eliminate redundant recalculations across UI updates.
-- **Resource & Memory Safety**: Automatic revocation of browser `blob:` object URLs upon file removal and unmount prevents memory leaks during heavy PDF uploads.
+- **Resource and Memory Safety**: Automatic revocation of browser `blob:` object URLs upon file removal and unmount prevents memory leaks during heavy PDF uploads.
 - **Optimized Window Listeners**: Centralized, animation-frame-throttled resize listeners for dynamic autosizing inputs replace dozens of individual global event listeners.
 
-## 🤖 Local AI Agent Integration (AGY, Kimi, Cursor, Claude, Ollama)
+## Local AI Agent Integration (AGY, Kimi, Cursor, Claude, Ollama)
 
 OpenResume supports direct integration with local coding agents and LLMs (such as **Antigravity / AGY**, **Kimi**, **Cursor**, **Claude Code**, or local **Ollama** models) to build, tailor, and format resumes locally with zero data ever sent to third-party resume platforms.
 
