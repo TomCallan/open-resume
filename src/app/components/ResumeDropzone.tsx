@@ -6,7 +6,10 @@ import {
   getHasUsedAppBefore,
   saveStateToLocalStorage,
 } from "lib/redux/local-storage";
-import { type ShowForm, initialSettings } from "lib/redux/settingsSlice";
+import { type ShowForm, initialSettings, type Settings } from "lib/redux/settingsSlice";
+import { initialResumeState } from "lib/redux/resumeSlice";
+import { deepMerge } from "lib/deep-merge";
+import type { Resume } from "lib/redux/types";
 import { useRouter } from "next/navigation";
 import addPdfSrc from "public/assets/add-pdf.svg";
 import Image from "next/image";
@@ -29,8 +32,9 @@ export const ResumeDropzone = ({
   playgroundView?: boolean;
 }) => {
   const [file, setFile] = useState(defaultFileState);
+  const [rawFile, setRawFile] = useState<File | null>(null);
   const [isHoveredOnDropzone, setIsHoveredOnDropzone] = useState(false);
-  const [hasNonPdfFile, setHasNonPdfFile] = useState(false);
+  const [hasUnsupportedFile, setHasUnsupportedFile] = useState(false);
   const router = useRouter();
 
   const hasFile = Boolean(file.name);
@@ -50,39 +54,76 @@ export const ResumeDropzone = ({
 
     const { name, size } = newFile;
     const fileUrl = URL.createObjectURL(newFile);
+    setRawFile(newFile);
     setFile({ name, size, fileUrl });
     onFileUrlChange(fileUrl);
+  };
+
+  const isSupportedFile = (fileName: string) => {
+    if (playgroundView) return fileName.endsWith(".pdf");
+    return fileName.endsWith(".pdf") || fileName.endsWith(".json");
   };
 
   const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const newFile = event.dataTransfer.files[0];
-    if (newFile.name.endsWith(".pdf")) {
-      setHasNonPdfFile(false);
+    if (newFile && isSupportedFile(newFile.name)) {
+      setHasUnsupportedFile(false);
       setNewFile(newFile);
     } else {
-      setHasNonPdfFile(true);
+      setHasUnsupportedFile(true);
     }
     setIsHoveredOnDropzone(false);
   };
 
   const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
     const newFile = files[0];
-    setNewFile(newFile);
+    if (isSupportedFile(newFile.name)) {
+      setHasUnsupportedFile(false);
+      setNewFile(newFile);
+    } else {
+      setHasUnsupportedFile(true);
+    }
   };
 
   const onRemove = () => {
     if (file.fileUrl) {
       URL.revokeObjectURL(file.fileUrl);
     }
+    setRawFile(null);
     setFile(defaultFileState);
     onFileUrlChange("");
   };
 
   const onImportClick = async () => {
+    if (rawFile && rawFile.name.endsWith(".json")) {
+      try {
+        const text = await rawFile.text();
+        const parsed = JSON.parse(text);
+        let resume: Resume;
+        let settings: Settings = deepClone(initialSettings);
+
+        if (parsed.resume) {
+          resume = deepMerge(initialResumeState, parsed.resume) as Resume;
+          if (parsed.settings) {
+            settings = deepMerge(initialSettings, parsed.settings) as Settings;
+          }
+        } else {
+          resume = deepMerge(initialResumeState, parsed) as Resume;
+        }
+
+        saveStateToLocalStorage({ resume, settings });
+        router.push("/resume-builder");
+        return;
+      } catch (err) {
+        alert("Invalid JSON resume format.");
+        return;
+      }
+    }
+
     const resume = await parseResumeFromPdf(file.fileUrl);
     const settings = deepClone(initialSettings);
 
@@ -130,7 +171,7 @@ export const ResumeDropzone = ({
           <Image
             src={addPdfSrc}
             className="mx-auto h-14 w-14"
-            alt="Add pdf"
+            alt="Add file"
             aria-hidden="true"
             priority
           />
@@ -143,7 +184,9 @@ export const ResumeDropzone = ({
                 !playgroundView && "text-lg font-semibold"
               )}
             >
-              Browse a pdf file or drop it here
+              {!playgroundView
+                ? "Browse a PDF / JSON file or drop it here"
+                : "Browse a pdf file or drop it here"}
             </p>
             <p className="flex text-sm text-gray-500">
               <LockClosedIcon className="mr-1 mt-1 h-3 w-3 text-gray-400" />
@@ -178,12 +221,16 @@ export const ResumeDropzone = ({
                 <input
                   type="file"
                   className="sr-only"
-                  accept=".pdf"
+                  accept={playgroundView ? ".pdf" : ".pdf,.json"}
                   onChange={onInputChange}
                 />
               </label>
-              {hasNonPdfFile && (
-                <p className="mt-6 text-red-400">Only pdf file is supported</p>
+              {hasUnsupportedFile && (
+                <p className="mt-6 text-red-400">
+                  {playgroundView
+                    ? "Only PDF file is supported in parser playground"
+                    : "Only PDF or JSON files are supported"}
+                </p>
               )}
             </>
           ) : (

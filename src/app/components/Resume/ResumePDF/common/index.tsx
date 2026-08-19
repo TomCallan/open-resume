@@ -131,6 +131,98 @@ export const ResumePDFSection = ({
       );
     }
 
+    if (template === "latex-jakes") {
+      return (
+        <View
+          style={{
+            ...styles.flexRow,
+            alignItems: "center",
+            borderBottomWidth: 1,
+            borderBottomColor: "#111827",
+            borderBottomStyle: "solid",
+            paddingBottom: "1pt",
+            marginBottom: spacing["1"],
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              letterSpacing: "0.8pt",
+              fontSize: "10.5pt",
+              color: "#111827",
+              textTransform: "uppercase",
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          >
+            {heading}
+          </Text>
+        </View>
+      );
+    }
+
+    if (template === "latex-moderncv") {
+      return (
+        <View
+          style={{
+            ...styles.flexRow,
+            alignItems: "center",
+            gap: spacing["2"],
+            marginBottom: spacing["1"],
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              letterSpacing: "0.5pt",
+              fontSize: "11pt",
+              color: themeColor || "#0284c7",
+              textTransform: "uppercase",
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          >
+            {heading}
+          </Text>
+          <View
+            style={{
+              flex: 1,
+              height: "1.5pt",
+              backgroundColor: themeColor || "#0284c7",
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          />
+        </View>
+      );
+    }
+
+    if (template === "latex-sb2nov") {
+      return (
+        <View
+          style={{
+            ...styles.flexRow,
+            alignItems: "center",
+            borderBottomWidth: 1.25,
+            borderBottomColor: themeColor || "#1e293b",
+            borderBottomStyle: "solid",
+            paddingBottom: "1.5pt",
+            marginBottom: spacing["1"],
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              letterSpacing: "0.6pt",
+              fontSize: "10.5pt",
+              color: themeColor || "#1e293b",
+              textTransform: "uppercase",
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          >
+            {heading}
+          </Text>
+        </View>
+      );
+    }
+
     // Default "modern"
     return (
       <View style={{ ...styles.flexRow, alignItems: "center" }}>

@@ -16,7 +16,7 @@ It has 6 Core Features:
 | <div style="width:285px">**Feature**</div> | **Description** |
 |---|---|
 | **1. Real Time UI Update** | The resume PDF is updated in real time as you enter your resume information, so you can easily see the final output. |
-| **2. Multi-Template Selection** | Choose across 5 curated ATS-friendly resume templates: **Modern** (sleek colored accents), **Classic** (traditional corporate centered header), **Executive** (bold header bar & solid section accents), **Minimal** (clean Swiss typography & airy margins), and **Compact** (high-density 1-page tech layout). |
+| **2. Multi-Template Selection** | Choose across 8 curated ATS-friendly resume templates including iconic LaTeX styles: **Jake's LaTeX** (Overleaf CS gold standard with `\hrulefill`), **ModernCV LaTeX** (European academic & tech standard with rule accents), **Tech LaTeX** (high-density FAANG engineering layout), **Modern** (sleek colored accents), **Classic** (traditional corporate centered header), **Executive** (bold header line & solid accents), **Minimal** (clean Swiss typography), and **Compact** (dense 1-page space saver). |
 | **3. Modern Professional Resume Design** | The resume PDF is a modern professional design that adheres to U.S. best practices and is ATS friendly to top ATS platforms such as Greenhouse and Lever. It automatically formats fonts, sizes, margins, bullet points to ensure consistency and avoid human errors. |
 | **4. Privacy Focus** | The app only runs locally on your browser, meaning no sign up is required and no data ever leaves your browser, so it gives you peace of mind on your personal data. (Fun fact: Running only locally means the app still works even if you disconnect the internet.) |
 | **5. Import From Existing Resume PDF** | If you already have an existing resume PDF, you have the option to import it directly, so you can update your resume design to a modern professional design in literally a few seconds. |
@@ -77,4 +77,105 @@ OpenResume is created with the NextJS web framework and follows its project stru
 - **Memoized ATS Parser Pipeline**: Text extraction, line grouping, and section scoring in the Resume Parser Playground are fully memoized using `useMemo` to eliminate redundant recalculations across UI updates.
 - **Resource & Memory Safety**: Automatic revocation of browser `blob:` object URLs upon file removal and unmount prevents memory leaks during heavy PDF uploads.
 - **Optimized Window Listeners**: Centralized, animation-frame-throttled resize listeners for dynamic autosizing inputs replace dozens of individual global event listeners.
+
+## 🤖 Local AI Agent Integration (AGY, Kimi, Cursor, Claude, Ollama)
+
+OpenResume supports direct integration with local coding agents and LLMs (such as **Antigravity / AGY**, **Kimi**, **Cursor**, **Claude Code**, or local **Ollama** models) to build, tailor, and format resumes locally with zero data ever sent to third-party resume platforms.
+
+### 1. How It Works
+AI agents can generate an OpenResume-compliant `resume.json` file. You can simply drag and drop the `.json` file into `/resume-import` (or browser dropzone), and OpenResume will immediately render your fully editable resume with your selected template.
+
+### 2. AI Agent Prompt Template
+
+Copy and pass this instruction to your AI agent (AGY, Kimi, etc.):
+
+```markdown
+You are an expert resume writer and ATS optimization specialist.
+Generate a structured resume JSON for the candidate tailored to the target job description.
+Return ONLY valid JSON matching this schema:
+
+{
+  "resume": {
+    "profile": {
+      "name": "Jane Doe",
+      "summary": "Full Stack Engineer with 6+ years building scalable distributed systems...",
+      "email": "jane.doe@example.com",
+      "phone": "+1 (555) 019-2834",
+      "location": "San Francisco, CA",
+      "url": "https://linkedin.com/in/janedoe"
+    },
+    "workExperiences": [
+      {
+        "company": "Acme Corp",
+        "jobTitle": "Senior Software Engineer",
+        "date": "2021 - Present",
+        "descriptions": [
+          "Architected real-time event streaming pipeline processing 10M+ events/day using Kafka and Go",
+          "Reduced p99 API latency by 45% through query optimization and Redis caching layer"
+        ]
+      }
+    ],
+    "educations": [
+      {
+        "school": "University of California, Berkeley",
+        "degree": "B.S. in Computer Science",
+        "date": "2015 - 2019",
+        "gpa": "3.85",
+        "descriptions": ["Dean's Honor List, Magna Cum Laude"]
+      }
+    ],
+    "projects": [
+      {
+        "project": "OpenSource Tool",
+        "date": "2023",
+        "descriptions": ["Built CLI developer tool with 2k+ GitHub stars using TypeScript and Rust"]
+      }
+    ],
+    "skills": {
+      "featuredSkills": [
+        { "skill": "TypeScript", "rating": 5 },
+        { "skill": "React / Next.js", "rating": 5 },
+        { "skill": "Go / Python", "rating": 4 },
+        { "skill": "PostgreSQL", "rating": 4 },
+        { "skill": "Kubernetes", "rating": 4 },
+        { "skill": "GraphQL", "rating": 4 }
+      ],
+      "descriptions": [
+        "Languages & Frameworks: TypeScript, JavaScript, Python, Go, React, Next.js, Node.js",
+        "Cloud & DevOps: AWS, Docker, Kubernetes, Terraform, GitHub Actions, CI/CD"
+      ]
+    },
+    "custom": {
+      "descriptions": []
+    }
+  },
+  "settings": {
+    "template": "modern",
+    "themeColor": "#38bdf8",
+    "fontFamily": "Roboto",
+    "fontSize": "11",
+    "documentSize": "Letter"
+  }
+}
+```
+
+### 3. Template Options for AI Agents
+
+When specifying `settings.template`, agents can pick any of the 8 built-in styles:
+- `"latex-jakes"`: Iconic Overleaf CS gold standard with centered header and `\hrulefill` dividers
+- `"latex-moderncv"`: Classic European academic & tech LaTeX style with horizontal rule accents
+- `"latex-sb2nov"`: High-density Silicon Valley / FAANG engineering standard
+- `"modern"`: Sleek colored accents and section marker bars
+- `"classic"`: Traditional corporate centered header with full-width dividers
+- `"executive"`: Bold header line with solid vertical accent bars
+- `"minimal"`: Clean Swiss typography with tracked uppercase headings and airy margins
+- `"compact"`: Dense single-page layout for maximizing space on tech resumes
+
+### 4. Direct Browser Injection (Optional)
+If running automated scripts or browser sidecars, agents can inject the state directly into the browser session:
+```javascript
+localStorage.setItem("open-resume-state", JSON.stringify({ resume, settings }));
+window.location.href = "/resume-builder";
+```
+
 

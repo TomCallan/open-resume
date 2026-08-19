@@ -18,6 +18,9 @@ describe("settingsSlice", () => {
       "minimal",
       "compact",
       "modern",
+      "latex-jakes",
+      "latex-moderncv",
+      "latex-sb2nov",
     ];
 
     let state = initialSettings;

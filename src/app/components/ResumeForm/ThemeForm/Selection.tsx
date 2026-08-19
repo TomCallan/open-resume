@@ -62,6 +62,24 @@ export const TEMPLATE_OPTIONS: TemplateOption[] = [
     description: "Sleek top accent bar with colored section markers",
   },
   {
+    type: "latex-jakes",
+    title: "Jake's LaTeX",
+    badge: "Overleaf CS",
+    description: "The #1 gold-standard Overleaf tech resume with \\hrulefill dividers",
+  },
+  {
+    type: "latex-moderncv",
+    title: "ModernCV LaTeX",
+    badge: "Academic",
+    description: "Classic European LaTeX template with full-width rule accents",
+  },
+  {
+    type: "latex-sb2nov",
+    title: "Tech LaTeX",
+    badge: "FAANG",
+    description: "High-density Silicon Valley engineering layout with crisp dividers",
+  },
+  {
     type: "classic",
     title: "Classic",
     badge: "Corporate",

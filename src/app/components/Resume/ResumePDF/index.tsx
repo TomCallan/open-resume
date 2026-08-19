@@ -113,11 +113,16 @@ export const ResumePDF = ({
 
   const showTopAccentBar =
     Boolean(settings.themeColor) &&
-    (template === "modern" || template === "executive" || template === "compact");
+    (template === "modern" ||
+      template === "executive" ||
+      template === "compact" ||
+      template === "latex-moderncv");
 
   const topBarHeight =
     template === "compact"
       ? "2.5pt"
+      : template === "latex-moderncv"
+      ? "3pt"
       : template === "executive"
       ? spacing[4]
       : spacing[3.5];
@@ -125,6 +130,12 @@ export const ResumePDF = ({
   const pagePadding =
     template === "compact"
       ? `${spacing[4]} ${spacing[16]}`
+      : template === "latex-jakes"
+      ? `${spacing[6]} ${spacing[14]}`
+      : template === "latex-sb2nov"
+      ? `${spacing[5]} ${spacing[14]}`
+      : template === "latex-moderncv"
+      ? `${spacing[6]} ${spacing[16]}`
       : template === "classic"
       ? `${spacing[8]} ${spacing[20]}`
       : template === "minimal"

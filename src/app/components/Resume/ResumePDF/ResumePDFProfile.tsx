@@ -133,6 +133,165 @@ export const ResumePDFProfile = ({
     );
   }
 
+  if (template === "latex-jakes") {
+    return (
+      <ResumePDFSection
+        template={template}
+        themeColor={themeColor}
+        style={{ marginTop: spacing["2"], alignItems: "center" }}
+      >
+        <ResumePDFText
+          bold={true}
+          style={{
+            fontSize: "22pt",
+            textAlign: "center",
+            letterSpacing: "0.5pt",
+            color: "#111827",
+          }}
+        >
+          {name}
+        </ResumePDFText>
+        <View
+          style={{
+            ...styles.flexRow,
+            justifyContent: "center",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: spacing["1.5"],
+            marginTop: spacing["1"],
+          }}
+        >
+          {activeContactEntries.map(([key, value], idx) => (
+            <View
+              key={key}
+              style={{ ...styles.flexRow, alignItems: "center", gap: spacing["1"] }}
+            >
+              {idx > 0 && <ResumePDFText style={{ color: "#64748b" }}>|</ResumePDFText>}
+              {renderContactItem(key, value, false)}
+            </View>
+          ))}
+        </View>
+        {summary && (
+          <ResumePDFText
+            style={{
+              textAlign: "center",
+              marginTop: spacing["1"],
+              paddingLeft: spacing["6"],
+              paddingRight: spacing["6"],
+              color: "#374151",
+            }}
+          >
+            {summary}
+          </ResumePDFText>
+        )}
+      </ResumePDFSection>
+    );
+  }
+
+  if (template === "latex-moderncv") {
+    return (
+      <ResumePDFSection
+        template={template}
+        themeColor={themeColor}
+        style={{ marginTop: spacing["3"] }}
+      >
+        <View style={{ ...styles.flexRowBetween, alignItems: "flex-end" }}>
+          <View style={{ ...styles.flexCol }}>
+            <ResumePDFText
+              bold={true}
+              themeColor={themeColor}
+              style={{ fontSize: "23pt", letterSpacing: "0.5pt" }}
+            >
+              {name}
+            </ResumePDFText>
+            {summary && (
+              <ResumePDFText
+                style={{
+                  marginTop: spacing["0.5"],
+                  color: "#475569",
+                  fontSize: "10.5pt",
+                }}
+              >
+                {summary}
+              </ResumePDFText>
+            )}
+          </View>
+          <View
+            style={{
+              ...styles.flexCol,
+              alignItems: "flex-end",
+              gap: spacing["0.5"],
+            }}
+          >
+            {activeContactEntries.map(([key, value]) =>
+              renderContactItem(key, value, true)
+            )}
+          </View>
+        </View>
+      </ResumePDFSection>
+    );
+  }
+
+  if (template === "latex-sb2nov") {
+    return (
+      <ResumePDFSection
+        template={template}
+        themeColor={themeColor}
+        style={{ marginTop: spacing["2"] }}
+      >
+        <View
+          style={{
+            ...styles.flexCol,
+            alignItems: "center",
+          }}
+        >
+          <ResumePDFText
+            bold={true}
+            style={{
+              fontSize: "21pt",
+              letterSpacing: "0.5pt",
+              color: "#0f172a",
+              textAlign: "center",
+            }}
+          >
+            {name}
+          </ResumePDFText>
+          <View
+            style={{
+              ...styles.flexRow,
+              justifyContent: "center",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: spacing["1.5"],
+              marginTop: spacing["0.5"],
+            }}
+          >
+            {activeContactEntries.map(([key, value], idx) => (
+              <View
+                key={key}
+                style={{ ...styles.flexRow, alignItems: "center", gap: spacing["1"] }}
+              >
+                {idx > 0 && <ResumePDFText style={{ color: "#94a3b8" }}>•</ResumePDFText>}
+                {renderContactItem(key, value, false)}
+              </View>
+            ))}
+          </View>
+          {summary && (
+            <ResumePDFText
+              style={{
+                marginTop: spacing["1"],
+                textAlign: "center",
+                color: "#334155",
+              }}
+            >
+              {summary}
+            </ResumePDFText>
+          )}
+        </View>
+      </ResumePDFSection>
+    );
+  }
+
   if (template === "compact") {
     return (
       <ResumePDFSection

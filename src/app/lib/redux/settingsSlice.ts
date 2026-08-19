@@ -6,7 +6,10 @@ export type TemplateType =
   | "classic"
   | "executive"
   | "minimal"
-  | "compact";
+  | "compact"
+  | "latex-jakes"
+  | "latex-moderncv"
+  | "latex-sb2nov";
 
 export interface Settings {
   template: TemplateType;
