@@ -19,8 +19,32 @@ It has 6 Core Features:
 | **2. Multi-Template Selection** | Choose across 8 curated ATS-friendly resume templates including iconic LaTeX styles: **Jake's LaTeX** (Overleaf CS gold standard with `\hrulefill`), **ModernCV LaTeX** (European academic & tech standard with rule accents), **Tech LaTeX** (high-density FAANG engineering layout), **Modern** (sleek colored accents), **Classic** (traditional corporate centered header), **Executive** (bold header line & solid accents), **Minimal** (clean Swiss typography), and **Compact** (dense 1-page space saver). |
 | **3. Modern Professional Resume Design** | The resume PDF is a modern professional design that adheres to U.S. best practices and is ATS friendly to top ATS platforms such as Greenhouse and Lever. It automatically formats fonts, sizes, margins, bullet points to ensure consistency and avoid human errors. |
 | **4. Privacy Focus** | The app only runs locally on your browser, meaning no sign up is required and no data ever leaves your browser, so it gives you peace of mind on your personal data. (Fun fact: Running only locally means the app still works even if you disconnect the internet.) |
-| **5. Import From Existing Resume PDF** | If you already have an existing resume PDF, you have the option to import it directly, so you can update your resume design to a modern professional design in literally a few seconds. |
+| **5. Import From Existing Resume PDF / JSON** | If you already have an existing resume PDF or an AI-generated `resume.json`, you can import it directly into OpenResume in seconds. |
 | **6. Successful Track Record** | OpenResume users have landed interviews and offers from top companies, such as Dropbox, Google, Meta to name a few. It has been proven to work and liken by recruiters and hiring managers. |
+
+## 🎨 Resume Template Gallery
+
+OpenResume includes 8 distinct, ATS-optimized templates. Every template is fully customizable in font family, font size, theme color, document size (Letter/A4), and section order.
+
+| **Jake's LaTeX (`latex-jakes`)** | **ModernCV LaTeX (`latex-moderncv`)** |
+| :---: | :---: |
+| <img src="public/examples/latex-jakes.png" width="380" alt="Jake's LaTeX Template"> | <img src="public/examples/latex-moderncv.png" width="380" alt="ModernCV LaTeX Template"> |
+| *Overleaf CS Gold Standard with `\hrulefill` dividers* | *European Academic & Tech style with horizontal rule accents* |
+
+| **Tech LaTeX (`latex-sb2nov`)** | **Compact (`compact`)** |
+| :---: | :---: |
+| <img src="public/examples/latex-sb2nov.png" width="380" alt="Tech LaTeX Template"> | <img src="public/examples/compact.png" width="380" alt="Compact Template"> |
+| *Silicon Valley FAANG high-density engineering layout* | *Space-saving 2-column header & dense single-page flow* |
+
+| **Executive (`executive`)** | **Minimal (`minimal`)** |
+| :---: | :---: |
+| <img src="public/examples/executive.png" width="380" alt="Executive Template"> | <img src="public/examples/minimal.png" width="380" alt="Minimal Template"> |
+| *Bold header band & solid vertical accent bars* | *Swiss typography with wide tracking & airy whitespace* |
+
+| **Classic (`classic`)** | **Modern (`modern`)** |
+| :---: | :---: |
+| <img src="public/examples/classic.png" width="380" alt="Classic Template"> | <img src="public/examples/modern.png" width="380" alt="Modern Template"> |
+| *Traditional corporate centered header & underline dividers* | *OpenResume original with top accent bar & badge markers* |
 
 ## 🔍 Resume Parser
 
