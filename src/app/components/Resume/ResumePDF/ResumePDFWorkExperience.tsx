@@ -6,18 +6,21 @@ import {
 } from "components/Resume/ResumePDF/common";
 import { styles, spacing } from "components/Resume/ResumePDF/styles";
 import type { ResumeWorkExperience } from "lib/redux/types";
+import type { TemplateType } from "lib/redux/settingsSlice";
 
 export const ResumePDFWorkExperience = ({
   heading,
   workExperiences,
   themeColor,
+  template,
 }: {
   heading: string;
   workExperiences: ResumeWorkExperience[];
   themeColor: string;
+  template?: TemplateType;
 }) => {
   return (
-    <ResumePDFSection themeColor={themeColor} heading={heading}>
+    <ResumePDFSection template={template} themeColor={themeColor} heading={heading}>
       {workExperiences.map(({ company, jobTitle, date, descriptions }, idx) => {
         // Hide company name if it is the same as the previous company
         const hideCompanyName =

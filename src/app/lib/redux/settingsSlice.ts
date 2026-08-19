@@ -1,7 +1,15 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "lib/redux/store";
 
+export type TemplateType =
+  | "modern"
+  | "classic"
+  | "executive"
+  | "minimal"
+  | "compact";
+
 export interface Settings {
+  template: TemplateType;
   themeColor: string;
   fontFamily: string;
   fontSize: string;
@@ -36,12 +44,14 @@ export type GeneralSetting = Exclude<
   "formToShow" | "formToHeading" | "formsOrder" | "showBulletPoints"
 >;
 
+export const DEFAULT_TEMPLATE: TemplateType = "modern";
 export const DEFAULT_THEME_COLOR = "#38bdf8"; // sky-400
 export const DEFAULT_FONT_FAMILY = "Roboto";
 export const DEFAULT_FONT_SIZE = "11"; // text-base https://tailwindcss.com/docs/font-size
 export const DEFAULT_FONT_COLOR = "#171717"; // text-neutral-800
 
 export const initialSettings: Settings = {
+  template: DEFAULT_TEMPLATE,
   themeColor: DEFAULT_THEME_COLOR,
   fontFamily: DEFAULT_FONT_FAMILY,
   fontSize: DEFAULT_FONT_SIZE,
@@ -75,10 +85,17 @@ export const settingsSlice = createSlice({
   reducers: {
     changeSettings: (
       draft,
-      action: PayloadAction<{ field: GeneralSetting; value: string }>
+      action: PayloadAction<
+        | { field: "template"; value: TemplateType }
+        | { field: Exclude<GeneralSetting, "template">; value: string }
+      >
     ) => {
       const { field, value } = action.payload;
-      draft[field] = value;
+      if (field === "template") {
+        draft.template = value;
+      } else {
+        draft[field] = value;
+      }
     },
     changeShowForm: (
       draft,
@@ -137,6 +154,8 @@ export const {
 } = settingsSlice.actions;
 
 export const selectSettings = (state: RootState) => state.settings;
+export const selectTemplate = (state: RootState) =>
+  state.settings.template || DEFAULT_TEMPLATE;
 export const selectThemeColor = (state: RootState) => state.settings.themeColor;
 
 export const selectFormToShow = (state: RootState) => state.settings.formToShow;

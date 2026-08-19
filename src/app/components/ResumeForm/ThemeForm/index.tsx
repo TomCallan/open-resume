@@ -6,12 +6,15 @@ import {
   DocumentSizeSelections,
   FontFamilySelectionsCSR,
   FontSizeSelections,
+  TemplateSelections,
 } from "components/ResumeForm/ThemeForm/Selection";
 import {
   changeSettings,
   DEFAULT_THEME_COLOR,
+  DEFAULT_TEMPLATE,
   selectSettings,
   type GeneralSetting,
+  type TemplateType,
 } from "lib/redux/settingsSlice";
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import type { FontFamily } from "components/fonts/constants";
@@ -20,11 +23,16 @@ import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 export const ThemeForm = () => {
   const settings = useAppSelector(selectSettings);
   const { fontSize, fontFamily, documentSize } = settings;
+  const template = settings.template || DEFAULT_TEMPLATE;
   const themeColor = settings.themeColor || DEFAULT_THEME_COLOR;
   const dispatch = useAppDispatch();
 
   const handleSettingsChange = (field: GeneralSetting, value: string) => {
-    dispatch(changeSettings({ field, value }));
+    if (field === "template") {
+      dispatch(changeSettings({ field: "template", value: value as TemplateType }));
+    } else {
+      dispatch(changeSettings({ field, value }));
+    }
   };
 
   return (
@@ -35,6 +43,14 @@ export const ThemeForm = () => {
           <h1 className="text-lg font-semibold tracking-wide text-gray-900 ">
             Resume Setting
           </h1>
+        </div>
+        <div>
+          <InputGroupWrapper label="Resume Template" />
+          <TemplateSelections
+            selectedTemplate={template}
+            themeColor={themeColor}
+            handleSettingsChange={handleSettingsChange}
+          />
         </div>
         <div>
           <InlineInput

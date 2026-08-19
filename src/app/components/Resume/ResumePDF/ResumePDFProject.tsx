@@ -6,18 +6,21 @@ import {
 } from "components/Resume/ResumePDF/common";
 import { styles, spacing } from "components/Resume/ResumePDF/styles";
 import type { ResumeProject } from "lib/redux/types";
+import type { TemplateType } from "lib/redux/settingsSlice";
 
 export const ResumePDFProject = ({
   heading,
   projects,
   themeColor,
+  template,
 }: {
   heading: string;
   projects: ResumeProject[];
   themeColor: string;
+  template?: TemplateType;
 }) => {
   return (
-    <ResumePDFSection themeColor={themeColor} heading={heading}>
+    <ResumePDFSection template={template} themeColor={themeColor} heading={heading}>
       {projects.map(({ project, date, descriptions }, idx) => (
         <View key={idx}>
           <View

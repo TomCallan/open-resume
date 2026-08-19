@@ -2,28 +2,137 @@ import { Text, View, Link } from "@react-pdf/renderer";
 import type { Style } from "@react-pdf/types";
 import { styles, spacing } from "components/Resume/ResumePDF/styles";
 import { DEBUG_RESUME_PDF_FLAG } from "lib/constants";
-import { DEFAULT_FONT_COLOR } from "lib/redux/settingsSlice";
+import { DEFAULT_FONT_COLOR, type TemplateType } from "lib/redux/settingsSlice";
 
 export const ResumePDFSection = ({
   themeColor,
   heading,
+  template = "modern",
   style = {},
   children,
 }: {
   themeColor?: string;
   heading?: string;
+  template?: TemplateType;
   style?: Style;
   children: React.ReactNode;
-}) => (
-  <View
-    style={{
-      ...styles.flexCol,
-      gap: spacing["2"],
-      marginTop: spacing["5"],
-      ...style,
-    }}
-  >
-    {heading && (
+}) => {
+  const renderHeading = () => {
+    if (!heading) return null;
+
+    if (template === "classic") {
+      return (
+        <View
+          style={{
+            ...styles.flexRow,
+            alignItems: "center",
+            borderBottomWidth: 1,
+            borderBottomColor: themeColor || "#cbd5e1",
+            borderBottomStyle: "solid",
+            paddingBottom: spacing["0.5"],
+            marginBottom: spacing["1"],
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              letterSpacing: "0.8pt",
+              fontSize: "10.5pt",
+              color: themeColor || DEFAULT_FONT_COLOR,
+              textTransform: "uppercase",
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          >
+            {heading}
+          </Text>
+        </View>
+      );
+    }
+
+    if (template === "executive") {
+      return (
+        <View
+          style={{
+            ...styles.flexRow,
+            alignItems: "center",
+            borderLeftWidth: 3.5,
+            borderLeftColor: themeColor || "#0284c7",
+            borderLeftStyle: "solid",
+            paddingLeft: spacing["2"],
+            marginBottom: spacing["0.5"],
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              letterSpacing: "0.5pt",
+              color: DEFAULT_FONT_COLOR,
+              textTransform: "uppercase",
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          >
+            {heading}
+          </Text>
+        </View>
+      );
+    }
+
+    if (template === "minimal") {
+      return (
+        <View
+          style={{
+            ...styles.flexRow,
+            alignItems: "center",
+            marginBottom: spacing["0.5"],
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              letterSpacing: "1.5pt",
+              color: themeColor || "#475569",
+              textTransform: "uppercase",
+              fontSize: "9.5pt",
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          >
+            {heading}
+          </Text>
+        </View>
+      );
+    }
+
+    if (template === "compact") {
+      return (
+        <View
+          style={{
+            ...styles.flexRow,
+            alignItems: "center",
+            borderBottomWidth: 0.5,
+            borderBottomColor: themeColor || "#94a3b8",
+            borderBottomStyle: "solid",
+            paddingBottom: "1pt",
+            marginBottom: "2pt",
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              letterSpacing: "0.3pt",
+              fontSize: "9.5pt",
+              color: themeColor || DEFAULT_FONT_COLOR,
+              textTransform: "uppercase",
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          >
+            {heading}
+          </Text>
+        </View>
+      );
+    }
+
+    // Default "modern"
+    return (
       <View style={{ ...styles.flexRow, alignItems: "center" }}>
         {themeColor && (
           <View
@@ -39,17 +148,37 @@ export const ResumePDFSection = ({
         <Text
           style={{
             fontWeight: "bold",
-            letterSpacing: "0.3pt", // tracking-wide -> 0.025em * 12 pt = 0.3pt
+            letterSpacing: "0.3pt",
           }}
           debug={DEBUG_RESUME_PDF_FLAG}
         >
           {heading}
         </Text>
       </View>
-    )}
-    {children}
-  </View>
-);
+    );
+  };
+
+  const defaultMarginTop =
+    template === "compact"
+      ? spacing["3"]
+      : template === "minimal"
+      ? spacing["4"]
+      : spacing["5"];
+
+  return (
+    <View
+      style={{
+        ...styles.flexCol,
+        gap: template === "compact" ? spacing["1"] : spacing["2"],
+        marginTop: defaultMarginTop,
+        ...style,
+      }}
+    >
+      {renderHeading()}
+      {children}
+    </View>
+  );
+};
 
 export const ResumePDFText = ({
   bold = false,

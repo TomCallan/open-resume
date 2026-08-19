@@ -6,20 +6,23 @@ import {
 } from "components/Resume/ResumePDF/common";
 import { styles, spacing } from "components/Resume/ResumePDF/styles";
 import type { ResumeEducation } from "lib/redux/types";
+import type { TemplateType } from "lib/redux/settingsSlice";
 
 export const ResumePDFEducation = ({
   heading,
   educations,
   themeColor,
   showBulletPoints,
+  template,
 }: {
   heading: string;
   educations: ResumeEducation[];
   themeColor: string;
   showBulletPoints: boolean;
+  template?: TemplateType;
 }) => {
   return (
-    <ResumePDFSection themeColor={themeColor} heading={heading}>
+    <ResumePDFSection template={template} themeColor={themeColor} heading={heading}>
       {educations.map(
         ({ school, degree, date, gpa, descriptions = [] }, idx) => {
           // Hide school name if it is the same as the previous school

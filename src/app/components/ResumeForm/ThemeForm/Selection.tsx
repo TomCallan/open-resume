@@ -1,4 +1,4 @@
-import type { GeneralSetting } from "lib/redux/settingsSlice";
+import type { GeneralSetting, TemplateType } from "lib/redux/settingsSlice";
 import { PX_PER_PT } from "lib/constants";
 import {
   FONT_FAMILY_TO_STANDARD_SIZE_IN_PT,
@@ -45,6 +45,115 @@ const Selection = ({
 
 const SelectionsWrapper = ({ children }: { children: React.ReactNode }) => {
   return <div className="mt-2 flex flex-wrap gap-3">{children}</div>;
+};
+
+export interface TemplateOption {
+  type: TemplateType;
+  title: string;
+  badge?: string;
+  description: string;
+}
+
+export const TEMPLATE_OPTIONS: TemplateOption[] = [
+  {
+    type: "modern",
+    title: "Modern",
+    badge: "Popular",
+    description: "Sleek top accent bar with colored section markers",
+  },
+  {
+    type: "classic",
+    title: "Classic",
+    badge: "Corporate",
+    description: "Traditional centered header with full-width dividers",
+  },
+  {
+    type: "executive",
+    title: "Executive",
+    badge: "Leadership",
+    description: "Bold header line with solid vertical accent bars",
+  },
+  {
+    type: "minimal",
+    title: "Minimal",
+    badge: "Clean",
+    description: "Swiss typography with wide tracking & airy spacing",
+  },
+  {
+    type: "compact",
+    title: "Compact",
+    badge: "1-Page Tech",
+    description: "Dense layout with split header for maximum content",
+  },
+];
+
+export const TemplateSelections = ({
+  selectedTemplate,
+  themeColor,
+  handleSettingsChange,
+}: {
+  selectedTemplate: TemplateType;
+  themeColor: string;
+  handleSettingsChange: (field: GeneralSetting, value: string) => void;
+}) => {
+  return (
+    <div className="mt-2 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+      {TEMPLATE_OPTIONS.map(({ type, title, badge, description }) => {
+        const isSelected = selectedTemplate === type;
+        return (
+          <div
+            key={type}
+            className={`cursor-pointer rounded-lg border-2 p-3 text-left transition-all shadow-sm ${
+              isSelected
+                ? "border-sky-500 bg-sky-50/50 shadow-md"
+                : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+            }`}
+            style={
+              isSelected
+                ? {
+                    borderColor: themeColor,
+                    backgroundColor: `${themeColor}12`,
+                  }
+                : {}
+            }
+            onClick={() => handleSettingsChange("template", type)}
+            onKeyDown={(e) => {
+              if (["Enter", " "].includes(e.key))
+                handleSettingsChange("template", type);
+            }}
+            tabIndex={0}
+            role="button"
+            aria-pressed={isSelected}
+          >
+            <div className="flex items-center justify-between">
+              <div className="font-semibold text-gray-900">{title}</div>
+              {badge && (
+                <span
+                  className="rounded-full px-2 py-0.5 text-xs font-medium"
+                  style={
+                    isSelected
+                      ? {
+                          backgroundColor: themeColor,
+                          color: "white",
+                        }
+                      : {
+                          backgroundColor: "#f1f5f9",
+                          color: "#475569",
+                        }
+                  }
+                >
+                  {badge}
+                </span>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+              {description}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 const FontFamilySelections = ({
@@ -161,3 +270,4 @@ export const DocumentSizeSelections = ({
     </SelectionsWrapper>
   );
 };
+

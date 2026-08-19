@@ -47,8 +47,8 @@ export const ResumePDF = ({
     formsOrder,
     showBulletPoints,
   } = settings;
+  const template = settings.template || "modern";
   const themeColor = settings.themeColor || DEFAULT_FONT_COLOR;
-
   const showFormsOrder = formsOrder.filter((form) => formToShow[form]);
 
   const renderSection = (form: ShowForm) => {
@@ -60,6 +60,7 @@ export const ResumePDF = ({
             heading={formToHeading["workExperiences"]}
             workExperiences={workExperiences}
             themeColor={themeColor}
+            template={template}
           />
         );
       case "educations":
@@ -70,6 +71,7 @@ export const ResumePDF = ({
             educations={educations}
             themeColor={themeColor}
             showBulletPoints={showBulletPoints["educations"]}
+            template={template}
           />
         );
       case "projects":
@@ -79,6 +81,7 @@ export const ResumePDF = ({
             heading={formToHeading["projects"]}
             projects={projects}
             themeColor={themeColor}
+            template={template}
           />
         );
       case "skills":
@@ -89,6 +92,7 @@ export const ResumePDF = ({
             skills={skills}
             themeColor={themeColor}
             showBulletPoints={showBulletPoints["skills"]}
+            template={template}
           />
         );
       case "custom":
@@ -99,12 +103,33 @@ export const ResumePDF = ({
             custom={custom}
             themeColor={themeColor}
             showBulletPoints={showBulletPoints["custom"]}
+            template={template}
           />
         );
       default:
         return null;
     }
   };
+
+  const showTopAccentBar =
+    Boolean(settings.themeColor) &&
+    (template === "modern" || template === "executive" || template === "compact");
+
+  const topBarHeight =
+    template === "compact"
+      ? "2.5pt"
+      : template === "executive"
+      ? spacing[4]
+      : spacing[3.5];
+
+  const pagePadding =
+    template === "compact"
+      ? `${spacing[4]} ${spacing[16]}`
+      : template === "classic"
+      ? `${spacing[8]} ${spacing[20]}`
+      : template === "minimal"
+      ? `${spacing[10]} ${spacing[20]}`
+      : `${spacing[0]} ${spacing[20]}`;
 
   return (
     <>
@@ -118,11 +143,11 @@ export const ResumePDF = ({
             fontSize: fontSize + "pt",
           }}
         >
-          {Boolean(settings.themeColor) && (
+          {showTopAccentBar && (
             <View
               style={{
                 width: spacing["full"],
-                height: spacing[3.5],
+                height: topBarHeight,
                 backgroundColor: themeColor,
               }}
             />
@@ -130,13 +155,14 @@ export const ResumePDF = ({
           <View
             style={{
               ...styles.flexCol,
-              padding: `${spacing[0]} ${spacing[20]}`,
+              padding: pagePadding,
             }}
           >
             <ResumePDFProfile
               profile={profile}
               themeColor={themeColor}
               isPDF={isPDF}
+              template={template}
             />
             {showFormsOrder.map(renderSection)}
           </View>
