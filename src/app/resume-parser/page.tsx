@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { readPdf } from "lib/parse-resume-from-pdf/read-pdf";
 import type { TextItems } from "lib/parse-resume-from-pdf/types";
 import { groupTextItemsIntoLines } from "lib/parse-resume-from-pdf/group-text-items-into-lines";
@@ -39,16 +39,29 @@ const defaultFileUrl = RESUME_EXAMPLES[0]["fileUrl"];
 export default function ResumeParser() {
   const [fileUrl, setFileUrl] = useState(defaultFileUrl);
   const [textItems, setTextItems] = useState<TextItems>([]);
-  const lines = groupTextItemsIntoLines(textItems || []);
-  const sections = groupLinesIntoSections(lines);
-  const resume = extractResumeFromSections(sections);
+
+  const lines = useMemo(
+    () => groupTextItemsIntoLines(textItems || []),
+    [textItems]
+  );
+  const sections = useMemo(() => groupLinesIntoSections(lines), [lines]);
+  const resume = useMemo(
+    () => extractResumeFromSections(sections),
+    [sections]
+  );
 
   useEffect(() => {
+    let isMounted = true;
     async function test() {
-      const textItems = await readPdf(fileUrl);
-      setTextItems(textItems);
+      const items = await readPdf(fileUrl);
+      if (isMounted) {
+        setTextItems(items);
+      }
     }
     test();
+    return () => {
+      isMounted = false;
+    };
   }, [fileUrl]);
 
   return (

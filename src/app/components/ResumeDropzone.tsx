@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LockClosedIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { parseResumeFromPdf } from "lib/parse-resume-from-pdf";
@@ -35,6 +35,14 @@ export const ResumeDropzone = ({
 
   const hasFile = Boolean(file.name);
 
+  useEffect(() => {
+    return () => {
+      if (file.fileUrl) {
+        URL.revokeObjectURL(file.fileUrl);
+      }
+    };
+  }, [file.fileUrl]);
+
   const setNewFile = (newFile: File) => {
     if (file.fileUrl) {
       URL.revokeObjectURL(file.fileUrl);
@@ -67,6 +75,9 @@ export const ResumeDropzone = ({
   };
 
   const onRemove = () => {
+    if (file.fileUrl) {
+      URL.revokeObjectURL(file.fileUrl);
+    }
     setFile(defaultFileState);
     onFileUrlChange("");
   };

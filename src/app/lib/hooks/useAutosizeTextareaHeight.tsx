@@ -1,5 +1,33 @@
 import { useEffect, useRef } from "react";
 
+const resizeListeners = new Set<() => void>();
+let isGlobalResizeAttached = false;
+let resizeRafId: number | null = null;
+
+const onGlobalResize = () => {
+  if (resizeRafId !== null) return;
+  resizeRafId = window.requestAnimationFrame(() => {
+    resizeRafId = null;
+    resizeListeners.forEach((listener) => listener());
+  });
+};
+
+const registerResizeListener = (listener: () => void) => {
+  resizeListeners.add(listener);
+  if (!isGlobalResizeAttached && typeof window !== "undefined") {
+    window.addEventListener("resize", onGlobalResize);
+    isGlobalResizeAttached = true;
+  }
+};
+
+const unregisterResizeListener = (listener: () => void) => {
+  resizeListeners.delete(listener);
+  if (resizeListeners.size === 0 && isGlobalResizeAttached && typeof window !== "undefined") {
+    window.removeEventListener("resize", onGlobalResize);
+    isGlobalResizeAttached = false;
+  }
+};
+
 /**
  * Hook to autosize textarea height.
  *
@@ -26,11 +54,13 @@ export const useAutosizeTextareaHeight = ({ value }: { value: string }) => {
     resizeHeight();
   }, [value]);
 
-  // Resize height when viewport resizes
+  // Resize height on shared throttled window resize
   useEffect(() => {
-    window.addEventListener("resize", resizeHeight);
-    return () => window.removeEventListener("resize", resizeHeight);
+    const handler = () => resizeHeight();
+    registerResizeListener(handler);
+    return () => unregisterResizeListener(handler);
   }, []);
 
   return textareaRef;
 };
+

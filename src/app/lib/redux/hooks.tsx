@@ -7,7 +7,8 @@ import {
 import { store, type RootState, type AppDispatch } from "lib/redux/store";
 import {
   loadStateFromLocalStorage,
-  saveStateToLocalStorage,
+  saveStateToLocalStorageDebounced,
+  flushStateToLocalStorage,
 } from "lib/redux/local-storage";
 import { initialResumeState, setResume } from "lib/redux/resumeSlice";
 import {
@@ -22,14 +23,25 @@ export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 /**
- * Hook to save store to local storage on store change
+ * Hook to save store to local storage on store change (debounced for performance)
  */
 export const useSaveStateToLocalStorageOnChange = () => {
   useEffect(() => {
     const unsubscribe = store.subscribe(() => {
-      saveStateToLocalStorage(store.getState());
+      saveStateToLocalStorageDebounced(store.getState());
     });
-    return unsubscribe;
+
+    const handleBeforeUnload = () => {
+      flushStateToLocalStorage();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      flushStateToLocalStorage();
+    };
   }, []);
 };
 
@@ -55,5 +67,6 @@ export const useSetInitialStore = () => {
       ) as Settings;
       dispatch(setSettings(mergedSettingsState));
     }
-  }, []);
+  }, [dispatch]);
 };
+

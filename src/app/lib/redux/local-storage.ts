@@ -14,6 +14,9 @@ export const loadStateFromLocalStorage = () => {
   }
 };
 
+let saveTimeout: ReturnType<typeof setTimeout> | null = null;
+let latestStateToSave: RootState | null = null;
+
 export const saveStateToLocalStorage = (state: RootState) => {
   try {
     const stringifiedState = JSON.stringify(state);
@@ -23,4 +26,28 @@ export const saveStateToLocalStorage = (state: RootState) => {
   }
 };
 
+export const saveStateToLocalStorageDebounced = (state: RootState, delay = 500) => {
+  latestStateToSave = state;
+  if (saveTimeout !== null) {
+    clearTimeout(saveTimeout);
+  }
+  saveTimeout = setTimeout(() => {
+    if (latestStateToSave) {
+      saveStateToLocalStorage(latestStateToSave);
+      latestStateToSave = null;
+      saveTimeout = null;
+    }
+  }, delay);
+};
+
+export const flushStateToLocalStorage = () => {
+  if (saveTimeout !== null && latestStateToSave !== null) {
+    clearTimeout(saveTimeout);
+    saveStateToLocalStorage(latestStateToSave);
+    latestStateToSave = null;
+    saveTimeout = null;
+  }
+};
+
 export const getHasUsedAppBefore = () => Boolean(loadStateFromLocalStorage());
+

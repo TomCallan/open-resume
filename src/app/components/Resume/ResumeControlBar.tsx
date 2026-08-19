@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSetDefaultScale } from "components/Resume/hooks";
 import {
   MagnifyingGlassIcon,
@@ -26,12 +26,23 @@ const ResumeControlBar = ({
     documentSize,
   });
 
-  const [instance, update] = usePDF({ document });
+  const [debouncedDocument, setDebouncedDocument] = useState(document);
 
-  // Hook to update pdf when document changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedDocument(document);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [document]);
+
+  const [instance, update] = usePDF({ document: debouncedDocument });
+
+  // Hook to update pdf when debounced document changes
   useEffect(() => {
     update();
-  }, [update, document]);
+  }, [update, debouncedDocument]);
+
+  const isDownloadDisabled = !instance.url || instance.loading;
 
   return (
     <div className="sticky bottom-0 left-0 right-0 flex h-[var(--resume-control-bar-height)] items-center justify-center px-[var(--resume-padding)] text-gray-600 lg:justify-between">
@@ -60,12 +71,24 @@ const ResumeControlBar = ({
         </label>
       </div>
       <a
-        className="ml-1 flex items-center gap-1 rounded-md border border-gray-300 px-3 py-0.5 hover:bg-gray-100 lg:ml-8"
-        href={instance.url!}
+        className={`ml-1 flex items-center gap-1 rounded-md border border-gray-300 px-3 py-0.5 lg:ml-8 ${
+          isDownloadDisabled
+            ? "cursor-not-allowed opacity-50 bg-gray-50"
+            : "hover:bg-gray-100"
+        }`}
+        href={instance.url || undefined}
         download={fileName}
+        aria-disabled={isDownloadDisabled}
+        onClick={(e) => {
+          if (isDownloadDisabled) {
+            e.preventDefault();
+          }
+        }}
       >
         <ArrowDownTrayIcon className="h-4 w-4" />
-        <span className="whitespace-nowrap">Download Resume</span>
+        <span className="whitespace-nowrap">
+          {instance.loading ? "Preparing PDF..." : "Download Resume"}
+        </span>
       </a>
     </div>
   );

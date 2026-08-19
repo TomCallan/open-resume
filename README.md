@@ -52,15 +52,14 @@ OpenResume is created with the NextJS web framework and follows its project stru
 | /resume-builder | /resume-builder/page.tsx | Resume builder page to build and download a resume PDF. The main components used are `ResumeForm` (`/components/ResumeForm`) and `Resume` (`/components/Resume`) |
 | /resume-parser | /resume-parser/page.tsx | Resume parser page to test a resume’s AST readability. The main library util used is `parseResumeFromPdf` (`/lib/parse-resume-from-pdf`) |
 
-## 💻 Local Development
-
 ### Method 1: npm
 
 1. Download the repo `git clone https://github.com/xitanggg/open-resume.git`
 2. Change the directory `cd open-resume`
-3. Install the dependency `npm install`
-4. Start a development server `npm run dev`
-5. Open your browser and visit [http://localhost:3000](http://localhost:3000) to see OpenResume live
+3. Install dependencies `npm install`
+4. Start development server `npm run dev`
+5. Run automated test suite `npm test` (or `npm run test:watch` for interactive watch mode)
+6. Open your browser and visit [http://localhost:3000](http://localhost:3000) to see OpenResume live
 
 ### Method 2: Docker
 
@@ -69,3 +68,12 @@ OpenResume is created with the NextJS web framework and follows its project stru
 3. Build the container `docker build -t open-resume .`
 4. Start the container `docker run -p 3000:3000 open-resume`
 5. Open your browser and visit [http://localhost:3000](http://localhost:3000) to see OpenResume live
+
+## 🚀 Performance & Architecture Highlights
+
+- **Zero-Latency Typing**: State persistence to `localStorage` is debounced (500ms) with an automatic `beforeunload` flush, preventing main-thread blocking during rapid typing.
+- **Efficient PDF Compilation**: PDF document generation via `@react-pdf/renderer` is debounced to avoid CPU thrashing on continuous keystrokes, with visual download preparation states.
+- **Memoized ATS Parser Pipeline**: Text extraction, line grouping, and section scoring in the Resume Parser Playground are fully memoized using `useMemo` to eliminate redundant recalculations across UI updates.
+- **Resource & Memory Safety**: Automatic revocation of browser `blob:` object URLs upon file removal and unmount prevents memory leaks during heavy PDF uploads.
+- **Optimized Window Listeners**: Centralized, animation-frame-throttled resize listeners for dynamic autosizing inputs replace dozens of individual global event listeners.
+

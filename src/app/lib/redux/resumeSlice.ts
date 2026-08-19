@@ -91,25 +91,37 @@ export const resumeSlice = createSlice({
         CreateChangeActionWithDescriptions<ResumeWorkExperience>
       >
     ) => {
-      const { idx, field, value } = action.payload;
+      const { idx } = action.payload;
       const workExperience = draft.workExperiences[idx];
-      workExperience[field] = value as any;
+      if (action.payload.field === "descriptions") {
+        workExperience.descriptions = action.payload.value;
+      } else {
+        workExperience[action.payload.field] = action.payload.value;
+      }
     },
     changeEducations: (
       draft,
       action: PayloadAction<CreateChangeActionWithDescriptions<ResumeEducation>>
     ) => {
-      const { idx, field, value } = action.payload;
+      const { idx } = action.payload;
       const education = draft.educations[idx];
-      education[field] = value as any;
+      if (action.payload.field === "descriptions") {
+        education.descriptions = action.payload.value;
+      } else {
+        education[action.payload.field] = action.payload.value;
+      }
     },
     changeProjects: (
       draft,
       action: PayloadAction<CreateChangeActionWithDescriptions<ResumeProject>>
     ) => {
-      const { idx, field, value } = action.payload;
+      const { idx } = action.payload;
       const project = draft.projects[idx];
-      project[field] = value as any;
+      if (action.payload.field === "descriptions") {
+        project.descriptions = action.payload.value;
+      } else {
+        project[action.payload.field] = action.payload.value;
+      }
     },
     changeSkills: (
       draft,

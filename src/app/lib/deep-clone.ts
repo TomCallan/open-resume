@@ -1,8 +1,10 @@
 /**
- * Server side object deep clone util using JSON serialization.
- * Not efficient for large objects but good enough for most use cases.
- *
- * Client side can simply use structuredClone.
+ * Object deep clone util using native structuredClone with JSON fallback.
  */
-export const deepClone = <T extends { [key: string]: any }>(object: T) =>
-  JSON.parse(JSON.stringify(object)) as T;
+export const deepClone = <T>(object: T): T => {
+  if (typeof structuredClone === "function") {
+    return structuredClone(object);
+  }
+  return JSON.parse(JSON.stringify(object)) as T;
+};
+

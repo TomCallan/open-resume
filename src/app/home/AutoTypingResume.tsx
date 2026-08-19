@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { ResumePDF } from "components/Resume/ResumePDF";
 import { initialResumeState } from "lib/redux/resumeSlice";
 import { initialSettings } from "lib/redux/settingsSlice";
@@ -20,7 +20,7 @@ const CHARS_PER_INTERVAL = 10;
 const RESET_INTERVAL_MS = 60 * 1000; // 60s
 
 export const AutoTypingResume = () => {
-  const [resume, setResume] = useState(deepClone(initialResumeState));
+  const [resume, setResume] = useState(() => deepClone(initialResumeState));
   const resumeCharIterator = useRef(
     makeObjectCharIterator(START_HOME_RESUME, END_HOME_RESUME)
   );
@@ -58,25 +58,32 @@ export const AutoTypingResume = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const settings = useMemo(
+    () => ({
+      ...initialSettings,
+      fontSize: "12",
+      formToHeading: {
+        workExperiences: resume.workExperiences[0]?.company
+          ? "WORK EXPERIENCE"
+          : "",
+        educations: resume.educations[0]?.school ? "EDUCATION" : "",
+        projects: resume.projects[0]?.project ? "PROJECT" : "",
+        skills: resume.skills.featuredSkills[0]?.skill ? "SKILLS" : "",
+        custom: "CUSTOM SECTION",
+      },
+    }),
+    [
+      resume.workExperiences,
+      resume.educations,
+      resume.projects,
+      resume.skills.featuredSkills,
+    ]
+  );
+
   return (
     <>
       <ResumeIframeCSR documentSize="Letter" scale={isLg ? 0.7 : 0.5}>
-        <ResumePDF
-          resume={resume}
-          settings={{
-            ...initialSettings,
-            fontSize: "12",
-            formToHeading: {
-              workExperiences: resume.workExperiences[0].company
-                ? "WORK EXPERIENCE"
-                : "",
-              educations: resume.educations[0].school ? "EDUCATION" : "",
-              projects: resume.projects[0].project ? "PROJECT" : "",
-              skills: resume.skills.featuredSkills[0].skill ? "SKILLS" : "",
-              custom: "CUSTOM SECTION",
-            },
-          }}
-        />
+        <ResumePDF resume={resume} settings={settings} />
       </ResumeIframeCSR>
     </>
   );
