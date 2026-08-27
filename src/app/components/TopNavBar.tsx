@@ -32,18 +32,14 @@ export const TopNavBar = () => {
           aria-label="Site Nav Bar"
           className="flex items-center gap-2 text-sm font-medium"
         >
-          {[
-            ["/resume-builder", "Builder"],
-            ["/resume-parser", "Parser"],
-          ].map(([href, text]) => (
+          <SignedIn>
             <Link
-              key={text}
-              className="rounded-md px-2.5 py-1.5 text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus-visible:bg-gray-100 lg:px-4"
-              href={href}
+              href="/documents"
+              className="rounded-md px-2.5 py-1.5 text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus-visible:bg-gray-100"
             >
-              {text}
+              My Resumes
             </Link>
-          ))}
+          </SignedIn>
           <Link
             href="https://github.com/TomCallan/open-resume"
             target="_blank"

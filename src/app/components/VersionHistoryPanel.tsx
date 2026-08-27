@@ -15,15 +15,16 @@ interface StoredSnapshot {
   settings: unknown;
 }
 
-export const VersionHistoryPanel = () => {
+export const VersionHistoryPanel = ({ documentId }: { documentId: string | null }) => {
   const dispatch = useAppDispatch();
   const [snapshots, setSnapshots] = useState<StoredSnapshot[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const listVersions = useCallback(async () => {
+    if (!documentId) return;
     try {
-      const res = await fetch("/api/resume/versions");
+      const res = await fetch(`/api/documents/${documentId}/versions`);
       if (res.ok) {
         const data = await res.json();
         setSnapshots(data.versions ?? []);
@@ -33,7 +34,7 @@ export const VersionHistoryPanel = () => {
     } catch {
       setError("Could not load version history.");
     }
-  }, []);
+  }, [documentId]);
 
   useEffect(() => {
     void listVersions();
@@ -41,11 +42,12 @@ export const VersionHistoryPanel = () => {
 
   const handleSaveVersion = async () => {
     if (busy) return;
+    if (!documentId) return;
     setBusy(true);
     setError(null);
     try {
       const name = window.prompt("Version name (optional)");
-      const res = await fetch("/api/resume/versions", {
+      const res = await fetch(`/api/documents/${documentId}/versions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: name || undefined }),
@@ -61,10 +63,11 @@ export const VersionHistoryPanel = () => {
 
   const handleRestore = async (version: number) => {
     if (busy) return;
+    if (!documentId) return;
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/resume/restore", {
+      const res = await fetch(`/api/documents/${documentId}/restore`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ version }),
