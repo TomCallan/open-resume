@@ -26,10 +26,12 @@ export const ResumeDropzone = ({
   onFileUrlChange,
   className,
   playgroundView = false,
+  importIntoWorkspace = false,
 }: {
   onFileUrlChange: (fileUrl: string) => void;
   className?: string;
   playgroundView?: boolean;
+  importIntoWorkspace?: boolean;
 }) => {
   const [file, setFile] = useState(defaultFileState);
   const [rawFile, setRawFile] = useState<File | null>(null);
@@ -115,6 +117,21 @@ export const ResumeDropzone = ({
           resume = deepMerge(initialResumeState, parsed) as Resume;
         }
 
+        if (importIntoWorkspace) {
+          const res = await fetch("/api/documents", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: "Imported Resume", resume, settings }),
+          });
+          if (!res.ok) {
+            alert("Could not save the imported resume.");
+            return;
+          }
+          const data = await res.json();
+          router.push(`/resume-builder?document=${data.id}`);
+          return;
+        }
+
         saveStateToLocalStorage({ resume, settings });
         router.push("/resume-builder");
         return;
@@ -135,6 +152,21 @@ export const ResumeDropzone = ({
       return;
     }
     const settings = deepClone(initialSettings);
+
+    if (importIntoWorkspace) {
+      const res = await fetch("/api/documents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "Imported Resume", resume, settings }),
+      });
+      if (!res.ok) {
+        alert("Could not save the imported resume.");
+        return;
+      }
+      const data = await res.json();
+      router.push(`/resume-builder?document=${data.id}`);
+      return;
+    }
 
     // Set formToShow settings based on uploaded resume if users have used the app before
     if (getHasUsedAppBefore()) {
