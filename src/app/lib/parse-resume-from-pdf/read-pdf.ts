@@ -1,9 +1,12 @@
-// Getting pdfjs to work is tricky. The following 3 lines would make it work
-// https://stackoverflow.com/a/63486898/7699841
+// Getting pdfjs to work is tricky. We self-host a worker and point
+// GlobalWorkerOptions.workerSrc at it. Do NOT use the "pdf.worker.entry"
+// import trick here: Next's build resolves it to an empty string, which makes
+// getDocument() fail to spawn a worker and reject (import silently does nothing).
 import * as pdfjs from "pdfjs-dist";
-// @ts-ignore
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+
+if (typeof window !== "undefined") {
+  pdfjs.GlobalWorkerOptions.workerSrc = "/pdfjs/pdf.worker.min.js";
+}
 
 import type { TextItem as PdfjsTextItem } from "pdfjs-dist/types/src/display/api";
 import type { TextItem, TextItems } from "lib/parse-resume-from-pdf/types";

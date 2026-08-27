@@ -124,7 +124,16 @@ export const ResumeDropzone = ({
       }
     }
 
-    const resume = await parseResumeFromPdf(file.fileUrl);
+    let resume: Resume;
+    try {
+      resume = await parseResumeFromPdf(file.fileUrl);
+    } catch (err) {
+      console.error("Failed to parse resume PDF", err);
+      alert(
+        "Sorry, we couldn't parse this PDF. Single-column, text-based resumes work best. You can continue building from scratch."
+      );
+      return;
+    }
     const settings = deepClone(initialSettings);
 
     // Set formToShow settings based on uploaded resume if users have used the app before
