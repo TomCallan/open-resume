@@ -6,6 +6,12 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   const { userId } = auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const sql = getSql();
+  const owned = await sql`
+    SELECT 1 FROM documents WHERE id = ${params.id} AND user_id = ${userId}
+  `;
+  if (owned.length === 0) {
+    return NextResponse.json({ error: "Document not found" }, { status: 404 });
+  }
   const rows = await sql`
     SELECT version, name, created_at FROM versions
     WHERE document_id = ${params.id}
