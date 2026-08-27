@@ -5,6 +5,7 @@ import { initialResumeState, setResume } from "lib/redux/resumeSlice";
 import { initialSettings, setSettings } from "lib/redux/settingsSlice";
 import { deepMerge } from "lib/deep-merge";
 import { onSyncStatusChange } from "lib/redux/server-sync";
+import { store } from "lib/redux/store";
 import type { Resume } from "lib/redux/types";
 import type { Settings } from "lib/redux/settingsSlice";
 
@@ -51,10 +52,15 @@ export const VersionHistoryPanel = ({ documentId }: { documentId: string | null 
     setError(null);
     try {
       const name = window.prompt("Version name (optional)");
+      const state = store.getState();
       const res = await fetch(`/api/documents/${documentId}/versions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name || undefined }),
+        body: JSON.stringify({
+          name: name || undefined,
+          resume: JSON.parse(JSON.stringify(state.resume)),
+          settings: JSON.parse(JSON.stringify(state.settings)),
+        }),
       });
       if (!res.ok) throw new Error("save failed");
       await listVersions();

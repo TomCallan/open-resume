@@ -34,9 +34,18 @@ export async function POST(req: Request, { params }: { params: { id: string } })
   }
   const body = await req.json().catch(() => ({}));
   const name = typeof body?.name === "string" && body.name.trim() ? body.name.trim() : null;
-  const current = await sql`
-    SELECT resume, settings FROM documents WHERE id = ${params.id} AND user_id = ${userId}
-  `;
+  const hasBodyState = body && (body.resume !== undefined || body.settings !== undefined);
+  if (hasBodyState) {
+    const bad = (v: unknown) => v === null || typeof v !== "object" || Array.isArray(v);
+    if (bad(body.resume) || bad(body.settings)) {
+      return NextResponse.json({ error: "invalid resume or settings" }, { status: 400 });
+    }
+  }
+  const current = hasBodyState
+    ? [{ resume: body.resume, settings: body.settings }]
+    : await sql`
+        SELECT resume, settings FROM documents WHERE id = ${params.id} AND user_id = ${userId}
+      `;
   if (current.length === 0) {
     return NextResponse.json({ error: "No document to snapshot" }, { status: 400 });
   }
