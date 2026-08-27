@@ -41,12 +41,12 @@ export const ResumeForm = () => {
       onMouseLeave={() => setIsHover(false)}
     >
       <section className="flex max-w-2xl flex-col gap-8 p-[var(--resume-padding)]">
+        <ThemeForm />
         <ProfileForm />
         {formsOrder.map((form) => {
           const Component = formTypeToComponent[form];
           return <Component key={form} />;
         })}
-        <ThemeForm />
         <br />
       </section>
       <FlexboxSpacer maxWidth={50} className="hidden md:block" />

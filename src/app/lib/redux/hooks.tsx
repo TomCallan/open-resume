@@ -4,6 +4,8 @@ import {
   useSelector,
   type TypedUseSelectorHook,
 } from "react-redux";
+import { useAuth } from "@clerk/nextjs";
+import { syncStateToServerDebounced } from "lib/redux/server-sync";
 import { store, type RootState, type AppDispatch } from "lib/redux/store";
 import {
   loadStateFromLocalStorage,
@@ -26,9 +28,13 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
  * Hook to save store to local storage on store change (debounced for performance)
  */
 export const useSaveStateToLocalStorageOnChange = () => {
+  const { userId } = useAuth();
+
   useEffect(() => {
     const unsubscribe = store.subscribe(() => {
-      saveStateToLocalStorageDebounced(store.getState());
+      const state = store.getState();
+      saveStateToLocalStorageDebounced(state);
+      if (userId) syncStateToServerDebounced(state);
     });
 
     const handleBeforeUnload = () => {
@@ -42,31 +48,57 @@ export const useSaveStateToLocalStorageOnChange = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
       flushStateToLocalStorage();
     };
-  }, []);
+  }, [userId]);
 };
 
 export const useSetInitialStore = () => {
   const dispatch = useAppDispatch();
+  const { userId } = useAuth();
+
   useEffect(() => {
-    const state = loadStateFromLocalStorage();
-    if (!state) return;
-    if (state.resume) {
-      // We merge the initial state with the stored state to ensure
-      // backward compatibility, since new fields might be added to
-      // the initial state over time.
-      const mergedResumeState = deepMerge(
-        initialResumeState,
-        state.resume
-      ) as Resume;
-      dispatch(setResume(mergedResumeState));
-    }
-    if (state.settings) {
-      const mergedSettingsState = deepMerge(
-        initialSettings,
-        state.settings
-      ) as Settings;
-      dispatch(setSettings(mergedSettingsState));
-    }
-  }, [dispatch]);
+    let cancelled = false;
+
+    const loadServerState = async () => {
+      if (!userId) return false;
+      try {
+        const res = await fetch("/api/resume");
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.resume) {
+            if (cancelled) return true;
+            const mergedResume = deepMerge(initialResumeState, data.resume) as Resume;
+            dispatch(setResume(mergedResume));
+            const mergedSettings = deepMerge(initialSettings, data.settings) as Settings;
+            dispatch(setSettings(mergedSettings));
+            return true;
+          }
+        }
+      } catch {
+        // fall through to local storage below
+      }
+      return false;
+    };
+
+    const init = async () => {
+      const loadedFromServer = await loadServerState();
+      if (loadedFromServer || cancelled) return;
+
+      const state = loadStateFromLocalStorage();
+      if (!state) return;
+      if (state.resume) {
+        const mergedResumeState = deepMerge(initialResumeState, state.resume) as Resume;
+        dispatch(setResume(mergedResumeState));
+      }
+      if (state.settings) {
+        const mergedSettingsState = deepMerge(initialSettings, state.settings) as Settings;
+        dispatch(setSettings(mergedSettingsState));
+      }
+    };
+
+    void init();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, dispatch]);
 };
 

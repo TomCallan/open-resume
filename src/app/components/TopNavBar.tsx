@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import logoSrc from "public/logo.svg";
 import { cx } from "lib/cx";
+import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/nextjs";
 
 export const TopNavBar = () => {
   const pathName = usePathname();
@@ -51,6 +52,18 @@ export const TopNavBar = () => {
           >
             GitHub
           </Link>
+          <div className="ml-2 flex items-center">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
+                  Sign in
+                </button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+          </div>
         </nav>
       </div>
     </header>
