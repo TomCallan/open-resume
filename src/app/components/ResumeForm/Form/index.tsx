@@ -35,11 +35,14 @@ import {
 export const BaseForm = ({
   children,
   className,
+  id,
 }: {
   children: React.ReactNode;
   className?: string;
+  id?: string;
 }) => (
   <section
+    id={id}
     className={`flex flex-col gap-3 rounded-md bg-white p-6 pt-4 shadow transition-opacity duration-200 ${className}`}
   >
     {children}
@@ -57,10 +60,12 @@ const FORM_TO_ICON: { [section in ShowForm]: typeof BuildingOfficeIcon } = {
 export const Form = ({
   form,
   addButtonText,
+  id,
   children,
 }: {
   form: ShowForm;
   addButtonText?: string;
+  id?: string;
   children: React.ReactNode;
 }) => {
   const showForm = useAppSelector(selectShowByForm(form));
@@ -85,6 +90,7 @@ export const Form = ({
 
   return (
     <BaseForm
+      id={id}
       className={`transition-opacity duration-200 ${
         showForm ? "pb-6" : "pb-2 opacity-60"
       }`}
