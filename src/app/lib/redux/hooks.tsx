@@ -27,14 +27,14 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 /**
  * Hook to save store to local storage on store change (debounced for performance)
  */
-export const useSaveStateToLocalStorageOnChange = () => {
+export const useSaveStateToLocalStorageOnChange = (documentId: string | null) => {
   const { userId } = useAuth();
 
   useEffect(() => {
     const unsubscribe = store.subscribe(() => {
       const state = store.getState();
       saveStateToLocalStorageDebounced(state);
-      if (userId) syncStateToServerDebounced(state);
+      if (userId) syncStateToServerDebounced(documentId, state);
     });
 
     const handleBeforeUnload = () => {
@@ -48,40 +48,36 @@ export const useSaveStateToLocalStorageOnChange = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
       flushStateToLocalStorage();
     };
-  }, [userId]);
+  }, [userId, documentId]);
 };
 
-export const useSetInitialStore = () => {
+export const useSetInitialStore = (documentId: string | null) => {
   const dispatch = useAppDispatch();
   const { userId } = useAuth();
 
   useEffect(() => {
     let cancelled = false;
 
-    const loadServerState = async () => {
-      if (!userId) return false;
+    const loadServer = async (): Promise<boolean> => {
+      if (!userId || !documentId) return false;
       try {
-        const res = await fetch("/api/resume");
+        const res = await fetch(`/api/documents/${documentId}`);
         if (res.ok) {
           const data = await res.json();
-          if (data?.resume) {
-            if (cancelled) return true;
-            const mergedResume = deepMerge(initialResumeState, data.resume) as Resume;
-            dispatch(setResume(mergedResume));
-            const mergedSettings = deepMerge(initialSettings, data.settings) as Settings;
-            dispatch(setSettings(mergedSettings));
-            return true;
-          }
+          if (cancelled) return true;
+          dispatch(setResume(deepMerge(initialResumeState, data.resume) as Resume));
+          dispatch(setSettings(deepMerge(initialSettings, data.settings) as Settings));
+          return true;
         }
       } catch {
-        // fall through to local storage below
+        // fall to local cache
       }
       return false;
     };
 
     const init = async () => {
-      const loadedFromServer = await loadServerState();
-      if (loadedFromServer || cancelled) return;
+      const ok = await loadServer();
+      if (ok || cancelled) return;
 
       const state = loadStateFromLocalStorage();
       if (!state) return;
@@ -99,6 +95,6 @@ export const useSetInitialStore = () => {
     return () => {
       cancelled = true;
     };
-  }, [userId, dispatch]);
+  }, [userId, documentId, dispatch]);
 };
 

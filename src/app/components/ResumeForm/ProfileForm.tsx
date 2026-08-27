@@ -14,7 +14,7 @@ export const ProfileForm = () => {
   };
 
   return (
-    <BaseForm>
+    <BaseForm id="profile-section">
       <div className="grid grid-cols-6 gap-3">
         <Input
           label="Name"

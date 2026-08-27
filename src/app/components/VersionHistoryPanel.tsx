@@ -4,6 +4,8 @@ import { useAppDispatch } from "lib/redux/hooks";
 import { initialResumeState, setResume } from "lib/redux/resumeSlice";
 import { initialSettings, setSettings } from "lib/redux/settingsSlice";
 import { deepMerge } from "lib/deep-merge";
+import { onSyncStatusChange } from "lib/redux/server-sync";
+import { store } from "lib/redux/store";
 import type { Resume } from "lib/redux/types";
 import type { Settings } from "lib/redux/settingsSlice";
 
@@ -15,15 +17,23 @@ interface StoredSnapshot {
   settings: unknown;
 }
 
-export const VersionHistoryPanel = () => {
+export const VersionHistoryPanel = ({
+  documentId,
+}: {
+  documentId: string | null;
+}) => {
   const dispatch = useAppDispatch();
   const [snapshots, setSnapshots] = useState<StoredSnapshot[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<"saving" | "saved" | null>(null);
+
+  useEffect(() => onSyncStatusChange(setSyncStatus), []);
 
   const listVersions = useCallback(async () => {
+    if (!documentId) return;
     try {
-      const res = await fetch("/api/resume/versions");
+      const res = await fetch(`/api/documents/${documentId}/versions`);
       if (res.ok) {
         const data = await res.json();
         setSnapshots(data.versions ?? []);
@@ -33,7 +43,7 @@ export const VersionHistoryPanel = () => {
     } catch {
       setError("Could not load version history.");
     }
-  }, []);
+  }, [documentId]);
 
   useEffect(() => {
     void listVersions();
@@ -41,14 +51,20 @@ export const VersionHistoryPanel = () => {
 
   const handleSaveVersion = async () => {
     if (busy) return;
+    if (!documentId) return;
     setBusy(true);
     setError(null);
     try {
       const name = window.prompt("Version name (optional)");
-      const res = await fetch("/api/resume/versions", {
+      const state = store.getState();
+      const res = await fetch(`/api/documents/${documentId}/versions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name || undefined }),
+        body: JSON.stringify({
+          name: name || undefined,
+          resume: JSON.parse(JSON.stringify(state.resume)),
+          settings: JSON.parse(JSON.stringify(state.settings)),
+        }),
       });
       if (!res.ok) throw new Error("save failed");
       await listVersions();
@@ -61,10 +77,11 @@ export const VersionHistoryPanel = () => {
 
   const handleRestore = async (version: number) => {
     if (busy) return;
+    if (!documentId) return;
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/resume/restore", {
+      const res = await fetch(`/api/documents/${documentId}/restore`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ version }),
@@ -87,6 +104,13 @@ export const VersionHistoryPanel = () => {
     <section className="border-b border-gray-200 bg-white px-6 py-3">
       <div className="flex flex-wrap items-center gap-3">
         <h2 className="text-sm font-semibold text-gray-900">Version History</h2>
+        <span className="text-xs text-gray-400">
+          {syncStatus === "saving"
+            ? "Saving…"
+            : syncStatus === "saved"
+            ? "Saved just now"
+            : ""}
+        </span>
         <button
           onClick={handleSaveVersion}
           disabled={busy}

@@ -21,7 +21,7 @@ export const EducationsForm = () => {
   const showBulletPoints = useAppSelector(selectShowBulletPoints(form));
 
   return (
-    <Form form={form} addButtonText="Add School">
+    <Form form={form} id="educations-section" addButtonText="Add School">
       {educations.map(({ school, degree, gpa, date, descriptions }, idx) => {
         const handleEducationChange = (
           ...[
