@@ -3,6 +3,18 @@ import type { RootState } from "lib/redux/store";
 let syncTimeout: ReturnType<typeof setTimeout> | null = null;
 let latest: { documentId: string | null; state: RootState } | null = null;
 
+type Listener = (status: "saving" | "saved" | null) => void;
+const listeners = new Set<Listener>();
+export function onSyncStatusChange(l: Listener) {
+  listeners.add(l);
+  return () => {
+    listeners.delete(l);
+  };
+}
+function emit(s: "saving" | "saved" | null) {
+  listeners.forEach((l) => l(s));
+}
+
 export const syncStateToServerDebounced = (documentId: string | null, state: RootState, delay = 500) => {
   if (!documentId) {
     saveStateToLocalStorageIgnored(state); // no-op; local autosave handled elsewhere
@@ -15,6 +27,7 @@ export const syncStateToServerDebounced = (documentId: string | null, state: Roo
     const { documentId: docId, state: snap } = latest;
     latest = null;
     syncTimeout = null;
+    emit("saving");
     fetch(`/api/documents/${docId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -22,7 +35,9 @@ export const syncStateToServerDebounced = (documentId: string | null, state: Roo
         resume: JSON.parse(JSON.stringify(snap.resume)),
         settings: JSON.parse(JSON.stringify(snap.settings)),
       }),
-    }).catch(() => {});
+    })
+      .then(() => emit("saved"))
+      .catch(() => emit("saved"));
   }, delay);
 };
 
