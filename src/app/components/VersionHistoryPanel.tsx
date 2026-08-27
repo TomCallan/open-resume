@@ -1,14 +1,8 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
-import {
-  initialResumeState,
-  setResume,
-} from "lib/redux/resumeSlice";
-import {
-  initialSettings,
-  setSettings,
-} from "lib/redux/settingsSlice";
+import { useAppDispatch } from "lib/redux/hooks";
+import { initialResumeState, setResume } from "lib/redux/resumeSlice";
+import { initialSettings, setSettings } from "lib/redux/settingsSlice";
 import { deepMerge } from "lib/deep-merge";
 import type { Resume } from "lib/redux/types";
 import type { Settings } from "lib/redux/settingsSlice";
@@ -23,8 +17,6 @@ interface StoredSnapshot {
 
 export const VersionHistoryPanel = () => {
   const dispatch = useAppDispatch();
-  const resume = useAppSelector((s) => s.resume);
-  const settings = useAppSelector((s) => s.settings);
   const [snapshots, setSnapshots] = useState<StoredSnapshot[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +27,8 @@ export const VersionHistoryPanel = () => {
       if (res.ok) {
         const data = await res.json();
         setSnapshots(data.versions ?? []);
+      } else {
+        setError("Could not load version history.");
       }
     } catch {
       setError("Could not load version history.");
@@ -78,7 +72,9 @@ export const VersionHistoryPanel = () => {
       if (!res.ok) throw new Error("restore failed");
       const data = await res.json();
       dispatch(setResume(deepMerge(initialResumeState, data.resume) as Resume));
-      dispatch(setSettings(deepMerge(initialSettings, data.settings) as Settings));
+      dispatch(
+        setSettings(deepMerge(initialSettings, data.settings) as Settings)
+      );
       await listVersions();
     } catch {
       setError("Could not restore version.");
@@ -108,7 +104,8 @@ export const VersionHistoryPanel = () => {
               className="flex items-center gap-2 rounded-md border border-gray-200 px-2 py-1 text-xs text-gray-700"
             >
               <span>
-                v{s.version}{s.name ? ` · ${s.name}` : ""}
+                v{s.version}
+                {s.name ? ` · ${s.name}` : ""}
               </span>
               <button
                 onClick={() => handleRestore(s.version)}

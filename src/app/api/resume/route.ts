@@ -27,8 +27,13 @@ export async function PATCH(req: Request) {
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const body = await req.json();
-  if (!body || typeof body.resume !== "object" || typeof body.settings !== "object") {
+  const body = await req.json().catch(() => ({}));
+  if (
+    body.resume == null ||
+    Array.isArray(body.resume) ||
+    body.settings == null ||
+    Array.isArray(body.settings)
+  ) {
     return NextResponse.json(
       { error: "resume and settings objects are required" },
       { status: 400 }

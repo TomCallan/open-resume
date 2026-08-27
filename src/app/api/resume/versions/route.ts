@@ -28,7 +28,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const body = await req.json().catch(() => ({}));
-  const name = typeof body?.name === "string" && body.name.trim() ? body.name.trim() : null;
+  const name =
+    typeof body?.name === "string" && body.name.trim()
+      ? body.name.trim()
+      : null;
 
   const sql = getSql();
 

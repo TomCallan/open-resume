@@ -33,7 +33,11 @@ export async function POST(req: Request) {
     SELECT COALESCE(MAX(version), 0) + 1 AS next
     FROM versions WHERE user_id = ${userId}
   `;
-  const restoredEntry = buildRestoredEntry(next, snapshot.resume, snapshot.settings);
+  const restoredEntry = buildRestoredEntry(
+    next,
+    snapshot.resume,
+    snapshot.settings
+  );
   await sql`
     INSERT INTO versions (user_id, version, resume, settings, name, created_at)
     VALUES (${userId}, ${restoredEntry.version}, ${restoredEntry.resume}, ${restoredEntry.settings}, ${restoredEntry.name}, now())
