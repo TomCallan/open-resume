@@ -25,8 +25,8 @@ export default function Create() {
           </div>
           <div
             className={cx(
-              "relative w-[45%] min-w-[420px] border-l border-gray-200 md:block",
-              previewOpen ? "block" : "hidden"
+              "relative hidden w-[45%] min-w-[420px] border-l border-gray-200",
+              previewOpen ? "md:block" : ""
             )}
           >
             <Resume />
