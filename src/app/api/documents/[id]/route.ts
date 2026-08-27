@@ -7,9 +7,13 @@ function getBodyOrEmpty(req: Request) {
   return req.json().catch(() => ({}));
 }
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  _req: Request,
+  { params }: { params: { id: string } }
+) {
   const { userId } = auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const sql = getSql();
   const rows = await sql`
     SELECT id, name, resume, settings, updated_at FROM documents
@@ -27,17 +31,31 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   });
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { userId } = auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await getBodyOrEmpty(req);
-  if (typeof body.resume === "undefined" && typeof body.settings === "undefined" && typeof body.name === "undefined") {
+  if (
+    typeof body.resume === "undefined" &&
+    typeof body.settings === "undefined" &&
+    typeof body.name === "undefined"
+  ) {
     return NextResponse.json({ error: "nothing to update" }, { status: 400 });
   }
-  if (body.resume != null && (typeof body.resume !== "object" || Array.isArray(body.resume))) {
+  if (
+    body.resume != null &&
+    (typeof body.resume !== "object" || Array.isArray(body.resume))
+  ) {
     return NextResponse.json({ error: "invalid resume" }, { status: 400 });
   }
-  if (body.settings != null && (typeof body.settings !== "object" || Array.isArray(body.settings))) {
+  if (
+    body.settings != null &&
+    (typeof body.settings !== "object" || Array.isArray(body.settings))
+  ) {
     return NextResponse.json({ error: "invalid settings" }, { status: 400 });
   }
   const sql = getSql();
@@ -52,7 +70,10 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   `;
   const nextResume = body.resume ?? current[0].resume;
   const nextSettings = body.settings ?? current[0].settings;
-  const nextName = body.name != null ? String(body.name).trim() || current[0].name : current[0].name;
+  const nextName =
+    body.name != null
+      ? String(body.name).trim() || current[0].name
+      : current[0].name;
   await sql`
     UPDATE documents
     SET resume = ${nextResume}, settings = ${nextSettings}, name = ${nextName}, updated_at = now()
@@ -61,9 +82,13 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   return NextResponse.json({ ok: true });
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  _req: Request,
+  { params }: { params: { id: string } }
+) {
   const { userId } = auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const sql = getSql();
   const exists = await sql`
     SELECT 1 FROM documents WHERE id = ${params.id} AND user_id = ${userId}

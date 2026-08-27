@@ -2,13 +2,11 @@
 import { useState, useMemo } from "react";
 import { ResumeIframeCSR } from "components/Resume/ResumeIFrame";
 import { ResumePDF } from "components/Resume/ResumePDF";
-import {
-  ResumeControlBarCSR,
-  ResumeControlBarBorder,
-} from "components/Resume/ResumeControlBar";
+import { ResumeControlBarCSR } from "components/Resume/ResumeControlBar";
 import { FlexboxSpacer } from "components/FlexboxSpacer";
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import { selectResume } from "lib/redux/resumeSlice";
+import { useSetDefaultScale } from "components/Resume/hooks";
 import {
   changeSettings,
   selectSettings,
@@ -33,6 +31,10 @@ export const Resume = () => {
 
   useRegisterReactPDFFont();
   useRegisterReactPDFHyphenationCallback(settings.fontFamily);
+  const { scaleOnResize, setScaleOnResize } = useSetDefaultScale({
+    setScale,
+    documentSize: settings.documentSize,
+  });
 
   return (
     <>
@@ -55,16 +57,18 @@ export const Resume = () => {
                 }
                 className="rounded-md border border-gray-300 px-2 py-1"
               >
-                {([
-                  "modern",
-                  "classic",
-                  "executive",
-                  "minimal",
-                  "compact",
-                  "latex-jakes",
-                  "latex-moderncv",
-                  "latex-sb2nov",
-                ] as const).map((t) => (
+                {(
+                  [
+                    "modern",
+                    "classic",
+                    "executive",
+                    "minimal",
+                    "compact",
+                    "latex-jakes",
+                    "latex-moderncv",
+                    "latex-sb2nov",
+                  ] as const
+                ).map((t) => (
                   <option key={t} value={t}>
                     {t}
                   </option>
@@ -74,12 +78,24 @@ export const Resume = () => {
             <div className="flex items-center gap-3">
               <label className="flex items-center gap-1 text-xs text-gray-500">
                 <input
+                  type="checkbox"
+                  className="mt-0.5 h-4 w-4"
+                  checked={scaleOnResize}
+                  onChange={() => setScaleOnResize((prev) => !prev)}
+                />
+                <span className="select-none">Autoscale</span>
+              </label>
+              <label className="flex items-center gap-1 text-xs text-gray-500">
+                <input
                   type="range"
                   min={0.5}
                   max={1.5}
                   step={0.01}
                   value={scale}
-                  onChange={(e) => setScale(Number(e.target.value))}
+                  onChange={(e) => {
+                    setScaleOnResize(false);
+                    setScale(Number(e.target.value));
+                  }}
                 />
                 <span className="w-10">{Math.round(scale * 100)}%</span>
               </label>
@@ -103,7 +119,6 @@ export const Resume = () => {
             </ResumeIframeCSR>
           </section>
         </div>
-        <ResumeControlBarBorder />
       </div>
     </>
   );

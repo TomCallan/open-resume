@@ -31,7 +31,12 @@ function Editor() {
         <div className="min-w-0 flex-1 overflow-y-auto">
           <ResumeForm documentId={documentId} />
         </div>
-        <div className={cx("relative hidden w-[45%] min-w-[420px] border-l border-gray-200", previewOpen ? "md:block" : "")}>
+        <div
+          className={cx(
+            "relative hidden w-[45%] min-w-[420px] border-l border-gray-200",
+            previewOpen ? "md:block" : ""
+          )}
+        >
           <Resume />
         </div>
         <button

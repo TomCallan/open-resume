@@ -21,7 +21,8 @@ if (hasLegacyResumes) {
       SELECT user_id, version, resume, settings, name, created_at FROM versions
     `;
     for (const row of rows) {
-      if (!legacyVersionsByUser.has(row.user_id)) legacyVersionsByUser.set(row.user_id, []);
+      if (!legacyVersionsByUser.has(row.user_id))
+        legacyVersionsByUser.set(row.user_id, []);
       legacyVersionsByUser.get(row.user_id).push(row);
     }
     // Old schema no longer needed; its data lives in legacyVersionsByUser.

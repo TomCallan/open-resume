@@ -7,29 +7,46 @@ import { initialSettings } from "lib/redux/settingsSlice";
 
 export async function GET() {
   const { userId } = auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const sql = getSql();
   const rows = await sql`
     SELECT id, name, updated_at FROM documents
     WHERE user_id = ${userId} ORDER BY updated_at DESC
   `;
   return NextResponse.json({
-    documents: rows.map((r) => ({ id: r.id, name: r.name, updatedAt: r.updated_at })),
+    documents: rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      updatedAt: r.updated_at,
+    })),
   });
 }
 
 export async function POST(req: Request) {
   const { userId } = auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json().catch(() => ({}));
   const name =
     typeof body?.name === "string" && body.name.trim()
       ? body.name.trim()
       : "My Resume";
   const resume = body?.resume ?? JSON.parse(JSON.stringify(initialResumeState));
-  const settings = body?.settings ?? JSON.parse(JSON.stringify(initialSettings));
-  if (!resume || Array.isArray(resume) || !settings || Array.isArray(settings)) {
-    return NextResponse.json({ error: "invalid resume or settings" }, { status: 400 });
+  const settings =
+    body?.settings ?? JSON.parse(JSON.stringify(initialSettings));
+  if (
+    resume == null ||
+    typeof resume !== "object" ||
+    Array.isArray(resume) ||
+    settings == null ||
+    typeof settings !== "object" ||
+    Array.isArray(settings)
+  ) {
+    return NextResponse.json(
+      { error: "invalid resume or settings" },
+      { status: 400 }
+    );
   }
   const id = randomUUID();
   const sql = getSql();

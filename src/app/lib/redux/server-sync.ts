@@ -15,9 +15,13 @@ function emit(s: "saving" | "saved" | null) {
   listeners.forEach((l) => l(s));
 }
 
-export const syncStateToServerDebounced = (documentId: string | null, state: RootState, delay = 500) => {
+export const syncStateToServerDebounced = (
+  documentId: string | null,
+  state: RootState,
+  delay = 500
+) => {
   if (!documentId) {
-    saveStateToLocalStorageIgnored(state); // no-op; local autosave handled elsewhere
+    // no document open: server-sync no-ops; local autosave still runs elsewhere
     return;
   }
   latest = { documentId, state };
@@ -40,8 +44,3 @@ export const syncStateToServerDebounced = (documentId: string | null, state: Roo
       .catch(() => emit("saved"));
   }, delay);
 };
-
-function saveStateToLocalStorageIgnored(_state: RootState) {
-  // Intentionally empty placeholder so server-sync never introduces localStorage writes.
-  return;
-}

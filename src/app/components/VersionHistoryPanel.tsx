@@ -17,7 +17,11 @@ interface StoredSnapshot {
   settings: unknown;
 }
 
-export const VersionHistoryPanel = ({ documentId }: { documentId: string | null }) => {
+export const VersionHistoryPanel = ({
+  documentId,
+}: {
+  documentId: string | null;
+}) => {
   const dispatch = useAppDispatch();
   const [snapshots, setSnapshots] = useState<StoredSnapshot[]>([]);
   const [busy, setBusy] = useState(false);
@@ -104,8 +108,8 @@ export const VersionHistoryPanel = ({ documentId }: { documentId: string | null 
           {syncStatus === "saving"
             ? "Saving…"
             : syncStatus === "saved"
-              ? "Saved just now"
-              : ""}
+            ? "Saved just now"
+            : ""}
         </span>
         <button
           onClick={handleSaveVersion}
